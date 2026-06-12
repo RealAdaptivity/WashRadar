@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WashRadar - Competitor Intelligence & Promotions Hub</title>
+  
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Project Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #fff;">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <span class="logo-text">WashRadar</span>
+        <span class="logo-badge">v1.0</span>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li class="menu-item active">
+          <a class="menu-link" data-tab="dashboard">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" data-tab="map">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+            </svg>
+            <span>Live Map</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" data-tab="construction">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <span>Construction Radar</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" data-tab="offers">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+            </svg>
+            <span>Offers & Promos</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" data-tab="weather">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+            </svg>
+            <span>Weather & Ops</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="operator-toggle-btn" id="operator-toggle">
+          ⚙️ Operator Portal
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-title-area">
+          <h1 id="view-title">Dashboard Overview</h1>
+          <p id="view-subtitle">Competitor intelligence & promotional insights</p>
+        </div>
+        <div class="header-actions">
+          <div class="status-indicator-bar">
+            <span class="status-dot"></span>
+            <span>Live System Stream</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Section Container -->
+      <div style="flex-grow: 1; overflow-y: auto; padding: 32px;">
+        
+        <!-- Operator Info Banner (Dynamically injected) -->
+        <div id="operator-banner-container" style="display: none;"></div>
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="dashboard-section" class="view-section active">
+          
+          <!-- Metric Widget Cards -->
+          <div class="dashboard-grid">
+            <div class="metric-card washes glass">
+              <div class="metric-header">
+                <span>Active Carwashes</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
+              </div>
+              <div class="metric-value" id="metric-open-count">-</div>
+              <div class="metric-footer">Currently <strong>Open</strong> and operating</div>
+            </div>
+
+            <div class="metric-card closures glass">
+              <div class="metric-header">
+                <span>Offline / Closures</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+              </div>
+              <div class="metric-value" id="metric-closed-count">-</div>
+              <div class="metric-footer">Washes flagged as <strong>closed</strong></div>
+            </div>
+
+            <div class="metric-card construction glass">
+              <div class="metric-header">
+                <span>Construction Sites</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+              </div>
+              <div class="metric-value" id="metric-builds-count">-</div>
+              <div class="metric-footer">New washes <strong>being built</strong> nearby</div>
+            </div>
+
+            <div class="metric-card offers glass">
+              <div class="metric-header">
+                <span>Active Promotions</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                </svg>
+              </div>
+              <div class="metric-value" id="metric-offers-count">-</div>
+              <div class="metric-footer">Discounts and unlimited deals active</div>
+            </div>
+          </div>
+
+          <!-- Lower Dashboard Row -->
+          <div class="dashboard-row-2">
+            
+            <!-- Traffic chart panel -->
+            <div class="analytics-panel glass">
+              <div class="panel-header">
+                <h2 id="analytics-chart-title">24-Hour Traffic Load</h2>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Select wash on right to view</span>
+              </div>
+              <div class="chart-container">
+                <canvas id="traffic-analytics-chart"></canvas>
+              </div>
+            </div>
+
+            <!-- Compact List of washes -->
+            <div class="sidebar-list-panel glass">
+              <div class="panel-header" style="margin-bottom: 16px;">
+                <h2>Carwash Quick Stats</h2>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Capacity Load</span>
+              </div>
+              <div class="type-filter-bar" style="margin-bottom: 12px; padding: 0 16px;">
+                <div class="filter-type-grid" style="display: flex; gap: 6px;">
+                  <button class="type-filter-btn active" data-type="all">All</button>
+                  <button class="type-filter-btn" data-type="full-service">Full Detail</button>
+                  <button class="type-filter-btn" data-type="express">Express</button>
+                  <button class="type-filter-btn" data-type="self-serve">Self-Serve</button>
+                </div>
+              </div>
+              <div class="wash-compact-list" id="dash-wash-list">
+                <!-- Injected via dashboard.js -->
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Wash Details / Products & Plans Row -->
+          <div class="dashboard-row-3 glass" id="dashboard-wash-details-row" style="margin-top: 24px; padding: 24px; border-radius: var(--border-radius-lg); display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h2 id="details-wash-name" style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: #fff;">Wash Details</h2>
+                  <span id="details-wash-type" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; border: 1px solid transparent;">-</span>
+                </div>
+                <p id="details-wash-address" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">📍 Address info</p>
+                <div id="details-wash-rating" style="font-size: 0.85rem; color: var(--color-amber); display: flex; align-items: center; gap: 4px; margin-top: 4px;"></div>
+              </div>
+              <div style="text-align: right;">
+                <span id="details-wash-hours" style="font-size: 0.85rem; color: var(--text-secondary); display: block;">🕒 Hours</span>
+                <span id="details-wash-phone" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 4px;">📞 Phone</span>
+                <span id="details-wash-website-container" style="font-size: 0.85rem; display: block; margin-top: 4px;">
+                  🌐 <a id="details-wash-website" href="#" target="_blank" style="color: var(--color-cyan); text-decoration: none; font-weight: 500;">Website</a>
+                </span>
+                <span id="details-wash-holidays" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-top: 4px;">🎉 Holidays</span>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 6px;">About this Wash</h3>
+                <p id="details-wash-summary" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">Summary details go here...</p>
+              </div>
+              <div style="border-left: 1px solid var(--border-color); padding-left: 20px;">
+                <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px;">History & Ownership</h3>
+                <p id="details-wash-established" style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 4px;">📅 Established: -</p>
+                <p id="details-wash-acquisition" style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 8px;">🔄 Acquisition: -</p>
+                <p id="details-wash-chemicals" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 4px;">🧪 Chemicals: -</p>
+                <p id="details-wash-eq-supplier" style="font-size: 0.82rem; color: var(--text-muted);">⚙️ Equipment: -</p>
+              </div>
+            </div>
+
+            <!-- Equipment Section -->
+            <div id="details-wash-equipment-container" style="margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+              <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Equipment & Technology</h3>
+              <div id="details-wash-equipment" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <!-- Dynamically injected equipment pills -->
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--color-primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Products & Single Wash Pricing</h3>
+                <div id="details-wash-products" style="display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Injected via dashboard.js -->
+                </div>
+              </div>
+              <div>
+                <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--color-cyan); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Unlimited Membership Plans</h3>
+                <div id="details-wash-plans" style="display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Injected via dashboard.js -->
+                </div>
+              </div>
+            </div>
+
+            <div id="details-wash-pricing-source" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 12px; display: flex; align-items: center; gap: 6px;">
+              <span>✅ Prices verified & sourced from official website:</span>
+              <a id="details-wash-pricing-link" href="#" target="_blank" style="color: var(--color-cyan); text-decoration: none; font-weight: 500;">domain.com</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. LIVE MAP VIEW -->
+        <section id="map-section" class="view-section">
+          <div class="map-view-container">
+            
+            <!-- Map sidebar controls -->
+            <div class="map-sidebar">
+              <div class="search-box">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="map-search" placeholder="Search washes or addresses...">
+              </div>
+
+              <!-- Map Filter Boxes -->
+              <div class="map-filter-group glass">
+                <h3>Radar Toggles</h3>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-open" checked>
+                  <span>Show Open Washes</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-closed" checked>
+                  <span>Show Closed / Maint.</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-construction" checked>
+                  <span>Show New Builds Underway</span>
+                </label>
+              </div>
+
+              <div class="map-filter-group glass" style="margin-top: 16px;">
+                <h3>Service Types</h3>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-type-full" checked>
+                  <span>Full Service / Detail</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-type-express" checked>
+                  <span>Express Conveyor</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" id="filter-type-self" checked>
+                  <span>Self-Serve Bays</span>
+                </label>
+              </div>
+
+              <!-- Filtered List of Map pins -->
+              <div class="map-results-list" id="map-results">
+                <!-- Dynamic cards injected via map.js -->
+              </div>
+            </div>
+
+            <!-- Leaflet Container -->
+            <div class="map-canvas-container">
+              <div id="map-canvas"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 3. CONSTRUCTION RADAR VIEW -->
+        <section id="construction-section" class="view-section">
+          <div class="construction-radar-view">
+            <div class="radar-header-actions">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <h2 style="font-family: var(--font-display);">Competitor Development Tracker</h2>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Watch new sites and permit pipelines within 15 miles</p>
+              </div>
+              <button id="btn-report-build">
+                <span>➕ Report New Build</span>
+              </button>
+            </div>
+            
+            <div class="construction-grid" id="construction-grid">
+              <!-- Dynamically populated via radar.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. OFFERS & PROMOTIONS VIEW -->
+        <section id="offers-section" class="view-section">
+          <div class="offers-view-container">
+            <div class="offers-header-actions">
+              
+              <!-- Offer filters -->
+              <div class="offers-filter-tabs">
+                <button class="offers-filter-btn active" data-filter="all">All Offers</button>
+                <button class="offers-filter-btn" data-filter="discount">Single Wash Discounts</button>
+                <button class="offers-filter-btn" data-filter="subscription">Unlimited Clubs</button>
+                <button class="offers-filter-btn" data-filter="combo">Wash combos</button>
+                <button class="offers-filter-btn" data-filter="freebie">Free Add-ons</button>
+              </div>
+
+              <button class="btn-primary" id="btn-post-offer" style="display: flex; align-items: center; gap: 8px;">
+                <span>📢 Post Promotion</span>
+              </button>
+            </div>
+
+            <div class="offers-grid" id="offers-grid">
+              <!-- Dynamically populated via offers.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. WEATHER & OPERATIONS VIEW -->
+        <section id="weather-section" class="view-section">
+          <!-- Dynamically populated via weather.js -->
+        </section>
+      </div>
+
+
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  
+  <!-- Operator Update Status Modal -->
+  <div class="modal-overlay" id="modal-operator-update">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-operator-update-modal">✕</button>
+      <h2 class="modal-title">Live Wash Status</h2>
+      <p class="modal-subtitle">Update operating conditions. Changes broadcast instantly.</p>
+      
+      <form id="form-operator-update">
+        <div class="form-group">
+          <label for="op-update-status">Current Status</label>
+          <select id="op-update-status">
+            <option value="open">Open (Active)</option>
+            <option value="closed">Closed (Temporary)</option>
+            <option value="maintenance">Under Maintenance</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="op-update-traffic">Competitor Traffic load</label>
+            <select id="op-update-traffic">
+              <option value="low">Low Traffic</option>
+              <option value="moderate">Moderate Capacity</option>
+              <option value="high">High Traffic (Lines Formed)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="op-update-wait">Estimated Wait Time (mins)</label>
+            <input type="number" id="op-update-wait" min="0" max="120" value="0">
+          </div>
+        </div>
+
+        <div class="form-group" id="op-reason-group" style="display: none;">
+          <label for="op-update-reason">Closure/Maintenance Reason</label>
+          <textarea id="op-update-reason" rows="3" placeholder="Explain why the wash is offline (e.g. frozen pipes, pump repairs)..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancel-operator-update">Cancel</button>
+          <button type="submit" class="btn-primary">Update Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Switch Operator Managed Wash Modal -->
+  <div class="modal-overlay" id="modal-switch-wash">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-switch-wash-modal">✕</button>
+      <h2 class="modal-title">Select Operator Account</h2>
+      <p class="modal-subtitle">Switch to represent a different carwash branch.</p>
+      
+      <form id="form-switch-wash">
+        <div class="form-group">
+          <label for="switch-wash-select">Carwash Location</label>
+          <select id="switch-wash-select">
+            <!-- Injected via app.js -->
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancel-switch-wash">Cancel</button>
+          <button type="submit" class="btn-primary">Assume Control</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Construction Site Modal -->
+  <div class="modal-overlay" id="modal-report-build">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-report-build-modal">✕</button>
+      <h2 class="modal-title">Report New Construction</h2>
+      <p class="modal-subtitle">Log a competitor building a wash nearby. Helps map future traffic changes.</p>
+      
+      <form id="form-report-build">
+        <div class="form-group">
+          <label for="build-name">Carwash Project Name</label>
+          <input type="text" id="build-name" placeholder="e.g. Clearwater Express Wash" required>
+        </div>
+
+        <div class="form-group">
+          <label for="build-address">Site Address / Coordinates Description</label>
+          <input type="text" id="build-address" placeholder="e.g. 5200 Airport Blvd, Austin TX" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="build-operator">Developer/Brand</label>
+            <input type="text" id="build-operator" placeholder="e.g. Clearwater LLC">
+          </div>
+          <div class="form-group">
+            <label for="build-completion">Est. Opening Timeframe</label>
+            <input type="text" id="build-completion" placeholder="e.g. Q4 2026" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="build-stage">Current Stage</label>
+          <select id="build-stage">
+            <option value="permitting">Permitting & Ground Approvals</option>
+            <option value="foundation">Excavation & Foundations</option>
+            <option value="framing">Framing & Tunnel Shell Construction</option>
+            <option value="equipment">Equipment Installation</option>
+            <option value="opening">Grand Opening Phase</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="build-details">Project Details / Rumors</label>
+          <textarea id="build-details" rows="3" placeholder="e.g. 100ft express tunnel, 30 vacuum bays, rumored competitor brand..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancel-build-submit">Cancel</button>
+          <button type="submit" class="btn-cyan">Report Competitor Site</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Post Promotion Modal -->
+  <div class="modal-overlay" id="modal-post-offer">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-post-offer-modal">✕</button>
+      <h2 class="modal-title">Publish Promotion</h2>
+      <p class="modal-subtitle">Distribute coupons or unlimited membership offers to customers.</p>
+      
+      <form id="form-post-offer">
+        <div class="form-group">
+          <label for="offer-wash-select">Issuing Carwash</label>
+          <select id="offer-wash-select">
+            <!-- Injected dynamically -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="offer-title">Promotion Name</label>
+          <input type="text" id="offer-title" placeholder="e.g. $5 Off Ceramic Shield Wash" required>
+        </div>
+
+        <div class="form-group">
+          <label for="offer-type">Promotion Type</label>
+          <select id="offer-type">
+            <option value="discount">Single Wash Discount</option>
+            <option value="subscription">Unlimited Monthly Membership Club</option>
+            <option value="combo">Wash & Vacuum combo discount</option>
+            <option value="freebie">Free Upgrade Add-on</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="offer-code">Redemption Code</label>
+            <input type="text" id="offer-code" placeholder="e.g. CAP5OFF" required>
+          </div>
+          <div class="form-group">
+            <label for="offer-expiry">Expiry Date</label>
+            <input type="date" id="offer-expiry" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="offer-details">Deal Terms / Description</label>
+          <textarea id="offer-details" rows="3" placeholder="Describe the wash package, savings value, and restrictions..." required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancel-offer-submit">Cancel</button>
+          <button type="submit" class="btn-primary">Post Promotion</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Application logic entrypoint -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
