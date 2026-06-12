@@ -108,6 +108,35 @@ class WeatherComponent {
             <div class="metric-footer">Combined wait & repairs</div>
           </div>
         </div>
+<!-- Weekly Weather Forecast -->
+<div class="weather-forecast-card glass" style="margin-top: 24px; padding: 16px; border-radius: var(--border-radius-lg);">
+  <h3 style="margin-bottom:12px; color: var(--text-primary);">7‑Day Forecast</h3>
+  <div class="forecast-grid" style="display:flex; gap:12px;">
+    ${forecast.map(f => {
+      let icon = "☀️", label = "Sunny";
+      if (f.weather === "rainy") { icon = "🌧️"; label = "Rainy"; }
+      else if (f.weather === "stormy") { icon = "⛈️"; label = "Stormy"; }
+      else if (f.weather === "freezing") { icon = "❄️"; label = "Freezing"; }
+      return `<div class="forecast-day" style="text-align:center; flex:1; background:rgba(255,255,255,0.05); padding:8px; border-radius:8px;">
+        <div style="font-weight:600;">${f.day}</div>
+        <div style="font-size:1.5rem;">${icon}</div>
+        <div>${label}</div>
+      </div>`;
+    }).join("")}
+  </div>
+</div>
+<!-- Estimated Weekly Volume -->
+<div class="weekly-volume-card glass" style="margin-top: 24px; padding: 16px; border-radius: var(--border-radius-lg);">
+  <h3 style="margin-bottom:12px; color: var(--text-primary);">Estimated Weekly Volume (cars)</h3>
+  <table class="weekly-volume-table" style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr><th>Carwash</th><th>Weekly Volume</th></tr>
+    </thead>
+    <tbody>
+      ${washVolumes.map(v => `<tr><td style="color:#fff;">${v.name}</td><td style="color:#fff;">${v.volume}</td></tr>`).join("")}
+    </tbody>
+  </table>
+</div>
 
         <!-- Wash Operational Status List -->
         <div class="weather-ops-panel glass" style="margin-top: 24px; padding: 24px; border-radius: var(--border-radius-lg);">

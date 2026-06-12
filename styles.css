@@ -389,6 +389,61 @@ header.top-header {
   color: var(--text-primary);
 }
 
+/* New UI cards */
+.weather-forecast-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius-lg);
+  color: var(--text-primary);
+  padding: 16px;
+}
+
+.weekly-volume-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  border-radius: var(--border-radius-lg);
+  color: var(--text-primary);
+  padding: 16px;
+}
+
+.weather-ops-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
+  border-radius: var(--border-radius-lg);
+  color: var(--text-primary);
+  padding: 16px;
+}
+
+.weather-ops-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.weather-ops-table th, .weather-ops-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  color: var(--text-primary);
+}
+.weather-ops-table thead {
+  background: var(--bg-secondary);
+}
+.weather-ops-table tbody tr:hover {
+  background: var(--bg-card-hover);
+}
+
+  color: var(--text-primary);
+}
+
 /* Dashboard Layout panels */
 .dashboard-row-2 {
   display: grid;
@@ -1327,4 +1382,31 @@ header.top-header {
   .construction-grid, .offers-grid {
     grid-template-columns: 1fr;
   }
+@media (max-width: 768px) {
+  .weather-stats-grid,
+  .weather-forecast-card,
+  .weekly-volume-card,
+  .weather-ops-panel {
+    width: 100%;
+    margin-top: 16px;
+  }
+  .weather-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .weather-ops-table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+  .weather-ops-table th,
+  .weather-ops-table td {
+    font-size: 0.85rem;
+    padding: 8px 6px;
+  }
+  .dashboard-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
 }
