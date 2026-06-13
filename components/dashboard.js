@@ -133,6 +133,7 @@ class DashboardComponent {
         
         const elName = document.getElementById("details-wash-name");
         const elAddress = document.getElementById("details-wash-address");
+        const elRating = document.getElementById("details-wash-rating");
         const elHours = document.getElementById("details-wash-hours");
         const elPhone = document.getElementById("details-wash-phone");
         const elWebsite = document.getElementById("details-wash-website");
@@ -151,6 +152,11 @@ class DashboardComponent {
 
         if (elName) elName.textContent = selectedWash.name;
         if (elAddress) elAddress.textContent = selectedWash.address;
+        if (elRating) {
+          const rating = selectedWash.rating || "N/A";
+          const reviews = selectedWash.reviewCount || 0;
+          elRating.innerHTML = `⭐ <span style="font-weight:700;">${rating}</span> <span style="color: var(--text-muted); font-size: 0.75rem;">(${reviews} reviews)</span>`;
+        }
         if (elHours) elHours.textContent = `🕒 ${selectedWash.hours}`;
         if (elPhone) elPhone.textContent = `📞 ${selectedWash.phone}`;
         
@@ -228,7 +234,7 @@ class DashboardComponent {
             selectedWash.products.forEach(p => {
               const div = document.createElement("div");
               div.style.display = "flex";
-              div.style.justify = "space-between";
+              div.style.justifyContent = "space-between";
               div.style.padding = "10px 14px";
               div.style.background = "rgba(255, 255, 255, 0.02)";
               div.style.border = "1px solid var(--border-color)";
@@ -248,10 +254,25 @@ class DashboardComponent {
         if (elPlans) {
           elPlans.innerHTML = "";
           if (selectedWash.plans && selectedWash.plans.length > 0) {
+            
+            // Phase 3 Pricing Trend
+            let trendHtml = "";
+            if (selectedWash.pricingHistory && selectedWash.pricingHistory.length >= 2) {
+              const latest = selectedWash.pricingHistory[selectedWash.pricingHistory.length - 1].price;
+              const earliest = selectedWash.pricingHistory[0].price;
+              if (latest > earliest) {
+                trendHtml = `<span style="font-size: 0.7rem; color: var(--color-red); margin-left: 8px;">↑ +$${(latest - earliest).toFixed(2)} (6m)</span>`;
+              } else if (latest < earliest) {
+                trendHtml = `<span style="font-size: 0.7rem; color: var(--color-green); margin-left: 8px;">↓ -$${(earliest - latest).toFixed(2)} (6m)</span>`;
+              } else {
+                trendHtml = `<span style="font-size: 0.7rem; color: var(--text-muted); margin-left: 8px;">Stable (6m)</span>`;
+              }
+            }
+
             selectedWash.plans.forEach(p => {
               const div = document.createElement("div");
               div.style.display = "flex";
-              div.style.justify = "space-between";
+              div.style.justifyContent = "space-between";
               div.style.padding = "10px 14px";
               div.style.background = "rgba(255, 255, 255, 0.02)";
               div.style.border = "1px solid var(--border-color)";
@@ -259,7 +280,10 @@ class DashboardComponent {
               div.style.fontSize = "0.85rem";
               div.innerHTML = `
                 <span style="font-weight: 500; color: var(--text-primary);">${p.name}</span>
-                <span style="font-weight: 700; color: var(--color-cyan);">$${Number(p.price).toFixed(2)}/mo</span>
+                <span>
+                  <span style="font-weight: 700; color: var(--color-cyan);">$${Number(p.price).toFixed(2)}/mo</span>
+                  ${trendHtml}
+                </span>
               `;
               elPlans.appendChild(div);
             });

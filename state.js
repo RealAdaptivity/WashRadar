@@ -1784,6 +1784,23 @@ function populateWashDetails(w) {
       };
     }
   }
+
+  // Phase 3: Reputation Tracking
+  w.rating = (Math.random() * 1.5 + 3.5).toFixed(1); // 3.5 to 5.0
+  w.reviewCount = Math.floor(Math.random() * 1500) + 50;
+
+  // Phase 3: Pricing History (Mock last 6 months trend for top plan)
+  const currentPrice = w.plans && w.plans.length > 0 ? w.plans[w.plans.length - 1].price : 29.99;
+  const basePrice = Math.max(9.99, currentPrice - (Math.random() * 10));
+  
+  w.pricingHistory = [
+    { date: "Jan", price: basePrice },
+    { date: "Feb", price: basePrice },
+    { date: "Mar", price: basePrice + (currentPrice - basePrice)*0.3 }, 
+    { date: "Apr", price: basePrice + (currentPrice - basePrice)*0.3 },
+    { date: "May", price: currentPrice },
+    { date: "Jun", price: currentPrice },
+  ].map(entry => ({ date: entry.date, price: parseFloat(entry.price.toFixed(2)) }));
 }
 
 DEFAULT_WASHES.forEach(populateWashDetails);
