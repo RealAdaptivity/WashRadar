@@ -46,6 +46,38 @@ class AppController {
     this.weatherComponent.init();
     this.analyticsComponent.init();
 
+    // Subscribe to state to handle the Ad Banner
+    const updateAdBanner = () => {
+      const { subscriptionTier } = state.getState();
+      const adBanner = document.getElementById("free-tier-ad");
+      if (adBanner) {
+        if (subscriptionTier === "basic") {
+          adBanner.style.display = "block";
+        } else {
+          adBanner.style.display = "none";
+        }
+      }
+    };
+    state.subscribe(updateAdBanner);
+    updateAdBanner(); // Initial call
+
+    // Global Export PDF
+    const btnExportPdfGlobal = document.getElementById("btn-export-pdf-global");
+    if (btnExportPdfGlobal) {
+      btnExportPdfGlobal.addEventListener("click", () => {
+        window.print();
+        state.addNotification("Export Started", "Printing Weekly Intelligence Brief...");
+      });
+    }
+
+    // Drone Modal Close
+    const btnCloseDrone = document.getElementById("close-drone-modal");
+    if (btnCloseDrone) {
+      btnCloseDrone.addEventListener("click", () => {
+        document.getElementById("modal-drone-imagery").style.display = "none";
+      });
+    }
+
     // Register globally for component cross-communication
     window.appInstance = this;
     

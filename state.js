@@ -176,9 +176,9 @@ const DEFAULT_WASHES = [
     name: "ZIPS Car Wash - Stacy",
     lat: 33.150408,
     lng: -96.698443,
-    status: "closed",
-    traffic: "low",
-    waitTime: 0,
+    status: "open",
+    traffic: "moderate",
+    waitTime: 12,
     address: "6102 Stacy Road, McKinney, TX 75070",
     phone: "(972) 555-0109",
     hours: "Mon-Sat: 8AM-8PM, Sun: 8AM-8PM",
@@ -187,7 +187,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 25, 35, 40, 45, 50, 48, 45, 50, 55, 48, 35, 25, 15, 8, 2, 0],
-    closureReason: "Upgrading payment kiosk. Reopening tomorrow at 8 AM."
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 928
   },
   {
     id: "wash-10",
@@ -454,9 +456,9 @@ const DEFAULT_WASHES = [
     name: "Keller Touchless Car Wash",
     lat: 32.932168,
     lng: -97.228142,
-    status: "closed",
-    traffic: "low",
-    waitTime: 0,
+    status: "open",
+    traffic: "moderate",
+    waitTime: 8,
     address: "1000 Keller Pkwy, Keller, TX 76248",
     phone: "(817) 555-0123",
     hours: "Open 24 Hours",
@@ -465,7 +467,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [10, 8, 5, 2, 1, 4, 12, 22, 30, 35, 38, 40, 42, 40, 38, 42, 45, 40, 30, 22, 15, 12, 10, 8],
-    closureReason: "Hydraulic pump replacement. Reopening Saturday morning."
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 541
   },
   {
     id: "wash-24",
@@ -516,7 +520,7 @@ const DEFAULT_WASHES = [
     traffic: "low",
     waitTime: 3,
     address: "1096 FM 156, Justin, TX 76247",
-    phone: "(940) 555-0201",
+    phone: "(940) 270-7201",
     hours: "Mon-Sat: 8AM-7PM, Sun: 8AM-5PM",
     ownership: "Family-owned and operated",
     openedDate: "Established",
@@ -652,9 +656,9 @@ const DEFAULT_WASHES = [
     name: "ZIPS Car Wash - Flower Mound",
     lat: 33.034123,
     lng: -97.059836,
-    status: "closed",
-    traffic: "low",
-    waitTime: 0,
+    status: "open",
+    traffic: "moderate",
+    waitTime: 10,
     address: "2111 Cross Timbers Rd, Flower Mound, TX 75028",
     phone: "(972) 555-0208",
     hours: "8:00 AM - 8:00 PM",
@@ -663,7 +667,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 25, 35, 40, 45, 50, 48, 45, 50, 55, 48, 35, 25, 15, 8, 2, 0],
-    closureReason: "Electrical panel maintenance. Reopening tomorrow morning."
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 928
   },
   {
     id: "wash-34",
@@ -1290,237 +1296,157 @@ const DEFAULT_WASHES = [
 const DEFAULT_CONSTRUCTION = [
   {
     id: "const-1",
-    name: "GlowWash Plano West",
-    lat: 33.026861,
-    lng: -96.792129,
-    address: "4900 W Park Blvd, Plano, TX 75093",
-    stage: "framing",
-    completion: "Q4 2026",
-    operator: "GlowWash DFW LLC",
-    details: "Next-gen express wash with 40 vacuum spaces and dual detail lanes."
-  },
-  {
-    id: "const-2",
-    name: "Clearwater Frisco East",
-    lat: 33.138941,
-    lng: -96.792522,
-    address: "14200 Rolater Rd, Frisco, TX 75035",
-    stage: "permitting",
-    completion: "Summer 2027",
-    operator: "Clearwater Ventures",
-    details: "Eco-friendly touchless automatic wash specializing in reclaimed water recycling systems."
-  },
-  {
-    id: "const-3",
-    name: "QuickSuds McKinney North",
-    lat: 33.217214,
-    lng: -96.653156,
-    address: "3000 W University Dr, McKinney, TX 75071",
-    stage: "excavation",
-    completion: "Q2 2027",
-    operator: "QuickSuds Southwest",
-    details: "Premium express tunnel wash with active underbody sprayers and ceramic coatings."
-  },
-  {
-    id: "const-4",
-    name: "Alliance Eco Wash",
-    lat: 32.947069,
-    lng: -97.311398,
-    address: "9800 N Freeway, Fort Worth, TX 76177",
-    stage: "permitting",
-    completion: "Summer 2027",
-    operator: "Clearwater Alliance LLC",
-    details: "Dual tunnel touchless design utilizing 100% water reclamation technology."
-  },
-  {
-    id: "const-5",
-    name: "Stadium Express Wash",
-    lat: 32.759045,
-    lng: -97.092508,
-    address: "1200 E Copeland Rd, Arlington, TX 76011",
-    stage: "excavation",
-    completion: "Q1 2027",
-    operator: "QuickSuds Southwest",
-    details: "Premium express wash with double prep station and dry-and-shine buffing arches."
-  },
-  {
-    id: "const-6",
-    name: "GlowWash Roanoke North",
-    lat: 33.011918,
-    lng: -97.235175,
-    address: "1200 Byron Nelson Blvd, Roanoke, TX 76262",
-    stage: "excavation",
-    completion: "Q2 2027",
-    operator: "GlowWash DFW LLC",
-    details: "State-of-the-art 110-foot conveyor express tunnel."
-  },
-  {
-    id: "const-7",
-    name: "Take 5 Car Wash",
-    lat: 32.753177,
-    lng: -97.332746,
-    address: "Summer Creek Dr & McPherson Blvd, Fort Worth, TX 76123",
-    stage: "foundation",
-    completion: "Q3 2026",
-    operator: "Take 5 DFW",
-    details: "Newly approved Take 5 express wash with 24 vacuum lanes."
-  },
-  {
-    id: "const-8",
     name: "WhiteWater Express Car Wash",
-    lat: 32.76157,
+    lat: 32.761570,
     lng: -97.165515,
     address: "8668 Cina Creek Parkway, Fort Worth, TX 76120",
     stage: "permitting",
     completion: "Q1 2027",
     operator: "WhiteWater DFW",
-    details: "Express tunnel car wash featuring spot-free rinse and vacuum stations."
+    details: "New 4,100-square-foot facility currently under plan review. Will feature their signature express tunnel and free vacuums."
+  },
+  {
+    id: "const-2",
+    name: "Beach Club Car Wash",
+    lat: 32.576831,
+    lng: -97.362145,
+    address: "FM 1187 & Crowley Pkwy, Crowley, TX 76036",
+    stage: "foundation",
+    completion: "Q4 2026",
+    operator: "Beach Club DFW LLC",
+    details: "Breaking ground following their initial grand opening. Bringing multi-lane touchless automatic technology."
+  },
+  {
+    id: "const-3",
+    name: "Baywash Express",
+    lat: 32.793214,
+    lng: -97.288591,
+    address: "River Edge Area, Fort Worth, TX 76118",
+    stage: "equipment",
+    completion: "Summer 2026",
+    operator: "Baywash Ventures",
+    details: "Rapidly finishing equipment installation for a new premium express wash with extensive membership perks."
+  },
+  {
+    id: "const-4",
+    name: "Links Car Wash",
+    lat: 32.658392,
+    lng: -97.102381,
+    address: "South Arlington, TX 76015",
+    stage: "renovation",
+    completion: "Fall 2026",
+    operator: "Links Car Wash",
+    details: "Former Slappy's Car Wash undergoing complete technological renovation and rebranding under the Links umbrella."
+  },
+  {
+    id: "const-5",
+    name: "Club Car Wash",
+    lat: 32.701124,
+    lng: -97.123512,
+    address: "Arlington, TX 76014",
+    stage: "renovation",
+    completion: "Winter 2026",
+    operator: "Club Car Wash Corporate",
+    details: "Recent acquisition of the former Gold Car Wash site. Being heavily renovated to meet Club Car Wash standard."
+  },
+  {
+    id: "const-6",
+    name: "Tommy's Express",
+    lat: 33.238411,
+    lng: -96.790932,
+    address: "US 380 & Preston Rd, Prosper, TX 75078",
+    stage: "excavation",
+    completion: "Q2 2027",
+    operator: "Tommy's Corporate",
+    details: "Massive 130ft flight deck conveyor site breaking ground in the rapidly expanding Prosper corridor."
+  },
+  {
+    id: "const-7",
+    name: "Mister Car Wash",
+    lat: 33.174829,
+    lng: -96.821943,
+    address: "PGA Parkway, Frisco, TX 75033",
+    stage: "framing",
+    completion: "Spring 2027",
+    operator: "Mister Car Wash",
+    details: "New Platinum-level express tunnel being built near the PGA headquarters to capture massive incoming traffic."
+  },
+  {
+    id: "const-8",
+    name: "Wash Guys Car Wash",
+    lat: 33.328192,
+    lng: -96.782103,
+    address: "Preston Rd, Celina, TX 75009",
+    stage: "permitting",
+    completion: "Q3 2027",
+    operator: "Wash Guys Regional",
+    details: "Expanding into the high-growth Celina market with a massive 24-bay vacuum setup."
   },
   {
     id: "const-9",
-    name: "Links Car Wash",
-    lat: 32.524076,
-    lng: -97.349249,
-    address: "200 NW John Jones Dr, Burleson, TX 76028",
+    name: "Carnation Auto Spa",
+    lat: 33.218563,
+    lng: -96.657382,
+    address: "380 & Hardin Blvd, McKinney, TX 75071",
     stage: "framing",
-    completion: "Q4 2026",
-    operator: "Links Car Wash Burleson",
-    details: "Brand new express wash replacing a former detail center, featuring 32 free vacuums."
+    completion: "Winter 2026",
+    operator: "Carnation DFW",
+    details: "Upcoming full-service auto spa offering express tunnels and dedicated interior detail lanes."
   },
   {
     id: "const-10",
-    name: "Caliber Car Wash",
-    lat: 33.056313,
-    lng: -96.713928,
-    address: "1000 W Spring Creek Pkwy, Plano, TX 75023",
-    stage: "equipment",
-    completion: "Q3 2026",
-    operator: "Caliber Car Wash DFW",
-    details: "Premium express wash installing its new conveyor tunnel and ceramic protectant arch."
-  },
-  {
-    id: "const-11",
-    name: "Beach Club Car Wash",
-    lat: 33.230421,
-    lng: -97.183506,
-    address: "3600 W University Dr, Denton, TX 76207",
-    stage: "permitting",
-    completion: "Q2 2027",
-    operator: "Beach Club DFW LLC",
-    details: "Planning phase for a new multi-lane touchless automatic wash facility."
+    name: "ZIPS Car Wash",
+    lat: 32.746182,
+    lng: -97.025381,
+    address: "Hwy 161 Frontage, Grand Prairie, TX 75052",
+    stage: "foundation",
+    completion: "Early 2027",
+    operator: "ZIPS Corporate",
+    details: "Laying the foundation for a high-volume ZIPS tunnel with 3-lane express gates."
   }
 ];
 
-const DEFAULT_OFFERS = [
-  {
-    id: "offer-1",
-    washId: "wash-1",
-    title: "50% Off Ceramic Shield",
-    description: "Get our absolute best exterior wash including Ceramic Shield and wheel glow coating for half price.",
-    type: "discount",
-    code: "CERAMIC50",
-    expires: "2026-07-15"
-  },
-  {
-    id: "offer-2",
-    washId: "wash-2",
-    title: "First Month Unlimited for $9.99",
-    description: "Join the VIP Club today. Get unlimited washes for your first month for only $9.99. No lock-in contracts.",
-    type: "subscription",
-    code: "VIP999",
-    expires: "2026-08-01"
-  },
-  {
-    id: "offer-3",
-    washId: "wash-3",
-    title: "Eco Wash + Vacuum Combo",
-    description: "Save $5 on our Premium Eco Wash which includes 30 minutes of high-suction vacuum usage.",
-    type: "combo",
-    code: "ECOSAVE5",
-    expires: "2026-06-30"
-  },
-  {
-    id: "offer-4",
-    washId: "wash-5",
-    title: "Free Rain Repellent Coating",
-    description: "Upgrade any single wash with our hydrophobic rain repellent treatment completely free.",
-    type: "freebie",
-    code: "RAINFREE",
-    expires: "2026-07-04"
-  },
-  {
-    id: "offer-5",
-    washId: "wash-7",
-    title: "10% Senior & Veteran Discount",
-    description: "Parkway Auto Spa honors seniors and military veterans with 10% off any single wash package.",
-    type: "discount",
-    code: "HONOR10",
-    expires: "2026-12-31"
-  },
-  {
-    id: "offer-6",
-    washId: "wash-10",
-    title: "Family Plan Wash Special",
-    description: "Add a second vehicle to your Oasis Auto Spa monthly membership for just $14.99/mo.",
-    type: "subscription",
-    code: "OASISFAM",
-    expires: "2026-09-01"
-  },
-  {
-    id: "offer-7",
-    washId: "wash-11",
-    title: "Dallas VIP Special",
-    description: "Get 30% off our Signature Exterior Detail wash package on Lemmon Ave.",
-    type: "discount",
-    code: "LEMMON30",
-    expires: "2026-08-15"
-  },
-  {
-    id: "offer-8",
-    washId: "wash-12",
-    title: "Fort Worth Unlimited Offer",
-    description: "Enjoy your first 2 months of Fort Worth Auto Spa VIP Club for just $14.99/mo.",
-    type: "subscription",
-    code: "FTWVIP2",
-    expires: "2026-07-31"
-  },
-  {
-    id: "offer-9",
-    washId: "wash-13",
-    title: "Arlington Wave Coupon",
-    description: "Get a free interior vacuum token with any Wave wash package.",
-    type: "freebie",
-    code: "ARLWAVE",
-    expires: "2026-07-10"
-  },
-  {
-    id: "offer-10",
-    washId: "wash-21",
-    title: "Southlake Detailing $15 Off",
-    description: "Save $15 on any full service interior/exterior detailing package.",
-    type: "discount",
-    code: "SLKDET15",
-    expires: "2026-08-31"
-  },
-  {
-    id: "offer-11",
-    washId: "wash-26",
-    title: "Longhorn Grand Opening Special",
-    description: "Save $5 on our Premium Longhorn wash including ceramic sealant.",
-    type: "discount",
-    code: "LONGHORN5",
-    expires: "2026-07-31"
-  },
-  {
-    id: "offer-12",
-    washId: "wash-29",
-    title: "Rocket Unlimited Club $9.99",
-    description: "Get unlimited washes for your first month of Rocket Club membership.",
-    type: "subscription",
-    code: "ROCKET999",
-    expires: "2026-08-15"
+const DEFAULT_OFFERS = [];
+
+DEFAULT_WASHES.forEach(w => {
+  const name = w.name.toLowerCase();
+  let offer = null;
+  
+  if (name.includes("tommy")) {
+    offer = { title: "First Month $9.99", description: "Join the TommyClub on the app and get your first month of the WORKS wash for just $9.99.", type: "subscription", code: "TOMMY999" };
+  } else if (name.includes("zips")) {
+    offer = { title: "Free Wash For New App Users", description: "Download the ZIPS Car Wash app and register to receive a free single wash.", type: "freebie", code: "ZIPSAPP" };
+  } else if (name.includes("club car wash")) {
+    offer = { title: "$14 MVP Tuesday", description: "Get our top-tier MVP wash for just $14 every Tuesday. $1 donated to Children's Miracle Network.", type: "discount", code: "MVP14" };
+  } else if (name.includes("mister")) {
+    offer = { title: "Unlimited Wash Club Trial", description: "Ask an attendant about our introductory pricing for your first two months of the Unlimited Wash Club.", type: "subscription", code: "MISTERUWC" };
+  } else if (name.includes("wash guys")) {
+    offer = { title: "Free VIP Wash", description: "Sign up for the WashGuys VIP text club and receive a free wash.", type: "freebie", code: "WGVIP" };
+  } else if (name.includes("whitewater")) {
+    offer = { title: "Free Wash With App", description: "Download the WhiteWater app and sign up for a free wash on us.", type: "freebie", code: "WWFREE" };
+  } else if (name.includes("carnation")) {
+    offer = { title: "Free Detail Assessment", description: "Stop by any Carnation Auto Spa for a complimentary paint and interior detailing assessment.", type: "freebie", code: "CARNATIONSPA" };
+  } else if (name.includes("qwikwash")) {
+    offer = { title: "10% Off Express Washes", description: "Show this code for 10% off any single express wash.", type: "discount", code: "QWIK10" };
+  } else if (name.includes("longhorn")) {
+    offer = { title: "Grand Opening Special", description: "Save $5 on our Best Wash including ceramic sealant.", type: "discount", code: "LONGHORN5" };
+  } else {
+    // Independent
+    offer = { title: "Welcome Discount", description: "10% off your first single wash or detail service.", type: "discount", code: "WELCOME10" };
   }
-];
+
+  if (offer) {
+    DEFAULT_OFFERS.push({
+      id: "offer-" + w.id,
+      washId: w.id,
+      title: offer.title,
+      description: offer.description,
+      type: offer.type,
+      code: offer.code,
+      expires: "2026-12-31"
+    });
+  }
+});
 
 function populateWashDetails(w) {
   const name = w.name.toLowerCase();
@@ -1533,6 +1459,29 @@ function populateWashDetails(w) {
   const ratingVal = 3.8 + Math.abs(hash % 12) * 0.1;
   w.rating = Number(ratingVal.toFixed(1));
   w.reviewCount = 240 + Math.abs(hash % 2000);
+
+  if (name.includes("tommy")) {
+    w.rating = 4.7;
+    w.reviewCount = 850 + Math.abs(hash % 300);
+  } else if (name.includes("mister")) {
+    w.rating = 4.4;
+    w.reviewCount = 650 + Math.abs(hash % 250);
+  } else if (name.includes("zips")) {
+    w.rating = 4.2;
+    w.reviewCount = 420 + Math.abs(hash % 200);
+  } else if (name.includes("club car wash")) {
+    w.rating = 4.6;
+    w.reviewCount = 580 + Math.abs(hash % 200);
+  } else if (name.includes("wash guys")) {
+    w.rating = 4.8;
+    w.reviewCount = 1200 + Math.abs(hash % 400);
+  } else if (name.includes("whitewater")) {
+    w.rating = 4.5;
+    w.reviewCount = 480 + Math.abs(hash % 150);
+  } else {
+    w.rating = Number((4.1 + Math.abs(hash % 8) * 0.1).toFixed(1)); 
+    w.reviewCount = 150 + Math.abs(hash % 300);
+  }
   // Additional enriched fields
   w.established = 2020; // Placeholder year of establishment
   w.acquired = "Acquired from XYZ in 2019"; // Placeholder acquisition history
@@ -1568,16 +1517,16 @@ function populateWashDetails(w) {
     w.equipment = ["110ft Dual-Belt Flight Deck", "Tommy Transporter Conveyor", "High-Pressure Arch Washers", "Tire Shine Applicator", "Spot-Free RO Water", "Vacutech High-Suction Vacuums"];
     w.holidays = "Closed on Thanksgiving & Christmas Day";
     w.products = [
-      { name: "Quality Wash", price: 9.00 },
-      { name: "Super Wash", price: 13.00 },
-      { name: "Ultimate Wash", price: 16.00 },
-      { name: "WORKS Wash", price: 20.00 }
+      { name: "Quality Wash", price: 10.00 },
+      { name: "Super Wash", price: 14.00 },
+      { name: "Ultimate Wash", price: 18.00 },
+      { name: "WORKS Wash", price: 22.00 }
     ];
     w.plans = [
-      { name: "Quality Unlimited", price: 19.99 },
-      { name: "Super Unlimited", price: 26.99 },
-      { name: "Ultimate Unlimited", price: 31.99 },
-      { name: "WORKS Unlimited", price: 37.99 }
+      { name: "Quality Unlimited", price: 20.00 },
+      { name: "Super Unlimited", price: 26.00 },
+      { name: "Ultimate Unlimited", price: 32.00 },
+      { name: "WORKS Unlimited", price: 38.00 }
     ];
   } else if (name.includes("carnation")) {
     w.summary = "Comprehensive auto spa and detailing center offering express automated washes, full interior cleaning, and paint correction.";
@@ -1601,15 +1550,15 @@ function populateWashDetails(w) {
     w.equipment = ["High-Speed Conveyor Tunnel", "Z-Tread Tire Shine Applicator", "Ceramic Luster Arch", "Dry-and-Shine Buffing Wheels", "Free Towel & Cleaner Carts", "High-Power Vacuum Stations"];
     w.holidays = "Closed on Thanksgiving & Christmas Day";
     w.products = [
-      { name: "Basic Wash", price: 12.00 },
-      { name: "Basic Plus Wash", price: 18.00 },
-      { name: "Pro Wash", price: 22.00 },
-      { name: "Premier Wash", price: 26.00 }
+      { name: "Get Wash", price: 12.00 },
+      { name: "Wash & Protect", price: 20.00 },
+      { name: "Wash, Protect & Shine", price: 25.00 },
+      { name: "ZIPS Premier", price: 30.00 }
     ];
     w.plans = [
-      { name: "Basic Plus Unlimited", price: 29.99 },
-      { name: "Pro Unlimited", price: 34.99 },
-      { name: "Premier Unlimited", price: 39.99 }
+      { name: "Wash & Protect Unlimited", price: 25.00 },
+      { name: "Wash, Protect & Shine Unlimited", price: 35.00 },
+      { name: "ZIPS Premier Unlimited", price: 45.00 }
     ];
   } else if (name.includes("club car wash")) {
     w.summary = "Club Car Wash DFW offers premier express exterior washing with an advanced conveyor belt tunnel, foam bath arches, and ceramic finishes.";
@@ -1618,10 +1567,10 @@ function populateWashDetails(w) {
     w.equipment = ["Conveyor Tunnel System", "Triple-Foam Bath Arches", "Ceramic X Graphene Shield", "Vacutech High-Suction Vacuums", "Spot-Free Water Rinse Manifold"];
     w.holidays = "Closed on Thanksgiving & Christmas Day";
     w.products = [
-      { name: "Rookie Wash", price: 10.00 },
-      { name: "VIP Wash", price: 15.00 },
-      { name: "Elite Wash", price: 20.00 },
-      { name: "MVP Wash", price: 25.00 }
+      { name: "Rookie Wash", price: 11.00 },
+      { name: "VIP Wash", price: 16.00 },
+      { name: "Elite Wash", price: 21.00 },
+      { name: "MVP Wash", price: 26.00 }
     ];
     w.plans = [
       { name: "Rookie Unlimited Club", price: 24.00 },
@@ -2100,6 +2049,22 @@ function populateWashDetails(w) {
       { name: "Mega Star Unlimited", price: 34.99 },
       { name: "Super Protect Unlimited", price: 39.99 }
     ];
+  } else if (name.includes("longhorn")) {
+    w.summary = "Local favorite express wash offering touch-free drying, deep foam baths, and heavy-duty wheel cleaning.";
+    w.website = "https://longhorncarwashtx.com";
+    w.serviceType = "express";
+    w.equipment = ["Conveyor Tunnel System", "Soft Foam Shampoo", "Heavy-Duty Wheel Blasters", "Max Blow Dryers"];
+    w.holidays = "Closed on Thanksgiving & Christmas Day";
+    w.products = [
+      { name: "Good Wash", price: 12.00 },
+      { name: "Better Wash", price: 18.00 },
+      { name: "Best Wash", price: 25.00 }
+    ];
+    w.plans = [
+      { name: "Good Unlimited", price: 25.00 },
+      { name: "Better Unlimited", price: 35.00 },
+      { name: "Best Unlimited", price: 43.00 }
+    ];
   } else {
     // General fallback archetype
     w.summary = "High-speed express exterior tunnel wash featuring state-of-the-art cleaning technology and free self-serve vacuums.";
@@ -2184,32 +2149,79 @@ function populateWashDetails(w) {
 DEFAULT_WASHES.forEach(populateWashDetails);
 
 function enhanceHistoryAndOwnership(wash) {
-  // Real brands
-  if (wash.name.includes("Tommy Terrific")) {
-    wash.established = "2008"; wash.acquired = "Independent"; wash.chemicalSupplier = "Qual Chem"; wash.equipmentSupplier = "Sonny's";
-  } else if (wash.name.includes("Carnation")) {
-    wash.established = "2015"; wash.acquired = "Private Equity Backed (2021)"; wash.chemicalSupplier = "Simoniz"; wash.equipmentSupplier = "MacNeil";
-  } else if (wash.name.includes("QwikWash")) {
-    wash.established = "2012"; wash.acquired = "Independent Regional"; wash.chemicalSupplier = "Blendco"; wash.equipmentSupplier = "Motor City";
-  } else if (wash.name.includes("Zips")) {
-    wash.established = "2004"; wash.acquired = "Atlantic Street Capital (2022)"; wash.chemicalSupplier = "Zips Proprietary"; wash.equipmentSupplier = "Sonny's / NCS";
-  } else if (wash.name.includes("Take 5")) {
-    wash.established = "2020"; wash.acquired = "Driven Brands (2020)"; wash.chemicalSupplier = "Armor All"; wash.equipmentSupplier = "NCS";
-  } else if (wash.name.includes("Mister Car Wash")) {
-    wash.established = "1969"; wash.acquired = "Publicly Traded (MCW)"; wash.chemicalSupplier = "Tidal Wave / Zep"; wash.equipmentSupplier = "MacNeil / Custom";
-  } else {
-    // Fictional / local brands
-    const years = ["1998", "2005", "2012", "2018", "2021"];
-    const acq = ["Independent Owner-Operator", "Local Franchise", "Regional Group Acquisition (2023)", "Family Owned"];
-    const chems = ["Simoniz", "Turtle Wax Pro", "Zep", "Qual Chem", "Blendco", "Lustra"];
-    const equips = ["Sonny's", "MacNeil", "Motor City", "Peco", "AVW", "Coleman Hanna"];
+  const map = {
+    "wash-1":  { est: "2008", acq: "Independent Owner-Operator", chems: "Qual Chem", eq: "Sonny's" },
+    "wash-2":  { est: "2015", acq: "Private Equity Backed (2021)", chems: "Simoniz", eq: "MacNeil" },
+    "wash-3":  { est: "2012", acq: "Family Owned", chems: "Turtle Wax Pro", eq: "Peco" },
+    "wash-4":  { est: "2009", acq: "Independent Regional", chems: "Blendco", eq: "Motor City" },
+    "wash-5":  { est: "2017", acq: "Local Franchise", chems: "Zep", eq: "AVW" },
+    "wash-6":  { est: "2014", acq: "Family Owned", chems: "Lustra", eq: "Coleman Hanna" },
+    "wash-7":  { est: "2010", acq: "Independent Owner-Operator", chems: "Qual Chem", eq: "Sonny's" },
+    "wash-8":  { est: "2019", acq: "Atlantic Street Capital (2022)", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-9":  { est: "2021", acq: "Atlantic Street Capital (2022)", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-10": { est: "2016", acq: "Regional Group Acquisition (2023)", chems: "Simoniz", eq: "MacNeil" },
+    "wash-11": { est: "2005", acq: "Family Owned", chems: "Turtle Wax Pro", eq: "Peco" },
+    "wash-12": { est: "2011", acq: "Independent Regional", chems: "Blendco", eq: "Motor City" },
+    "wash-13": { est: "2018", acq: "Local Franchise", chems: "Zep", eq: "AVW" },
+    "wash-14": { est: "2003", acq: "Independent Owner-Operator", chems: "Lustra", eq: "Coleman Hanna" },
+    "wash-15": { est: "1998", acq: "Family Owned", chems: "Qual Chem", eq: "Sonny's" },
+    "wash-16": { est: "1969", acq: "Publicly Traded (MCW)", chems: "Tidal Wave / Zep", eq: "MacNeil / Custom" },
+    "wash-17": { est: "2013", acq: "Regional Group Acquisition (2023)", chems: "Simoniz", eq: "MacNeil" },
+    "wash-18": { est: "2007", acq: "Family Owned", chems: "Turtle Wax Pro", eq: "Peco" },
+    "wash-19": { est: "2015", acq: "Independent Regional", chems: "Blendco", eq: "Motor City" },
+    "wash-20": { est: "2020", acq: "Local Franchise", chems: "Zep", eq: "AVW" },
+    "wash-21": { est: "2014", acq: "Independent Owner-Operator", chems: "Lustra", eq: "Coleman Hanna" },
+    "wash-22": { est: "2016", acq: "Family Owned", chems: "Qual Chem", eq: "Sonny's" },
+    "wash-23": { est: "2009", acq: "Independent Regional", chems: "Simoniz", eq: "MacNeil" },
+    "wash-24": { est: "2012", acq: "Regional Group Acquisition (2023)", chems: "Turtle Wax Pro", eq: "Peco" },
+    "wash-25": { est: "2006", acq: "Family Owned", chems: "Blendco", eq: "Motor City" },
+    "wash-26": { est: "2018", acq: "Independent Owner-Operator", chems: "Zep", eq: "AVW" },
+    "wash-27": { est: "2022", acq: "Private Equity Backed", chems: "Simoniz", eq: "MacNeil" },
+    "wash-28": { est: "2019", acq: "Local Franchise", chems: "Qual Chem", eq: "Sonny's" },
+    "wash-29": { est: "2021", acq: "City Capital Ventures", chems: "Zep", eq: "MacNeil" },
+    "wash-30": { est: "2017", acq: "WhiteWater Express", chems: "Simoniz", eq: "Sonny's" },
+    "wash-31": { est: "2020", acq: "Driven Brands (2020)", chems: "Armor All", eq: "NCS" },
+    "wash-32": { est: "2015", acq: "Buc-ee's Corporate", chems: "Buc-ee's Proprietary", eq: "MacNeil Extruded" },
+    "wash-33": { est: "2018", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-34": { est: "2021", acq: "Tommy's Corporate", chems: "Tommy's Proprietary", eq: "Tommy Car Wash Systems" },
+    "wash-35": { est: "2014", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-36": { est: "2008", acq: "Kwik Kar Franchise", chems: "Local Distributor", eq: "AVW" },
+    "wash-37": { est: "2019", acq: "Super Star Corporate", chems: "Super Star Proprietary", eq: "MacNeil" },
+    "wash-38": { est: "2016", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-39": { est: "2017", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-40": { est: "2013", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-41": { est: "2015", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-42": { est: "2020", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-43": { est: "2018", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-44": { est: "2019", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-45": { est: "2021", acq: "Wash Guys Regional", chems: "Simoniz", eq: "Sonny's" },
+    "wash-46": { est: "2012", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-47": { est: "2014", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-48": { est: "2016", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-49": { est: "2015", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-50": { est: "2019", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-51": { est: "2017", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-52": { est: "2018", acq: "Atlantic Street Capital", chems: "Zips Proprietary", eq: "Sonny's / NCS" },
+    "wash-53": { est: "2020", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-54": { est: "2021", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-55": { est: "2021", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-56": { est: "2019", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-57": { est: "2018", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-58": { est: "2022", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-59": { est: "2022", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-60": { est: "2023", acq: "Club Car Wash Corporate", chems: "ChemQuest", eq: "Sonny's" },
+    "wash-61": { est: "2010", acq: "Family Owned", chems: "Zep", eq: "Coleman Hanna" },
+    "wash-62": { est: "2014", acq: "Independent Owner-Operator", chems: "Blendco", eq: "Peco" },
+    "wash-63": { est: "2012", acq: "Family Owned", chems: "Turtle Wax Pro", eq: "MacNeil" },
+    "wash-64": { est: "2016", acq: "Independent Owner-Operator", chems: "Qual Chem", eq: "Motor City" }
+  };
 
-    // Deterministic random based on wash.id
-    const idHash = wash.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-    wash.established = years[idHash % years.length];
-    wash.acquired = acq[(idHash + 1) % acq.length];
-    wash.chemicalSupplier = chems[(idHash + 2) % chems.length];
-    wash.equipmentSupplier = equips[(idHash + 3) % equips.length];
+  const data = map[wash.id];
+  if (data) {
+    wash.openedDate = data.est;
+    wash.ownership = data.acq;
+    wash.chemicals = data.chems;
+    wash.equipment = data.eq;
   }
 }
 
@@ -2274,6 +2286,50 @@ class StateManager {
         body: body,
         icon: "washradar_logo.png"
       });
+    }
+
+    // Trigger UI Toast Notification
+    const toastContainer = document.getElementById("toast-container");
+    if (toastContainer) {
+      const toast = document.createElement("div");
+      toast.className = "toast-notification";
+      toast.style.background = "var(--bg-card)";
+      toast.style.border = "1px solid var(--border-color)";
+      toast.style.borderLeft = "4px solid var(--color-primary)";
+      toast.style.boxShadow = "0 10px 25px rgba(0,0,0,0.3)";
+      toast.style.borderRadius = "8px";
+      toast.style.padding = "16px";
+      toast.style.width = "320px";
+      toast.style.transform = "translateX(120%)";
+      toast.style.opacity = "0";
+      toast.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+      toast.style.pointerEvents = "auto";
+      
+      toast.innerHTML = `
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+          <div style="background:var(--color-primary-glow); color:var(--color-primary); padding:8px; border-radius:50%; flex-shrink:0;">
+            <svg style="width:20px; height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          </div>
+          <div>
+            <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-family:var(--font-display);">${title}</h4>
+            <p style="margin:0; font-size:0.85rem; color:var(--text-secondary); line-height:1.4;">${body}</p>
+          </div>
+        </div>
+      `;
+      toastContainer.appendChild(toast);
+      
+      // Animate in
+      requestAnimationFrame(() => {
+        toast.style.transform = "translateX(0)";
+        toast.style.opacity = "1";
+      });
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(120%)";
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
     }
 
     this.notifySubscribers();
@@ -2516,6 +2572,7 @@ class StateManager {
   loadLocalStorageFallback() {
     this.washes = JSON.parse(localStorage.getItem("washradar_washes")) || DEFAULT_WASHES;
     this.washes.forEach(populateWashDetails);
+    this.washes.forEach(enhanceHistoryAndOwnership);
     this.construction = JSON.parse(localStorage.getItem("washradar_construction")) || DEFAULT_CONSTRUCTION;
     this.offers = JSON.parse(localStorage.getItem("washradar_offers")) || DEFAULT_OFFERS;
     this.notify();
@@ -2527,6 +2584,7 @@ class StateManager {
         if (e.key === "washradar_washes") {
           this.washes = JSON.parse(e.newValue) || DEFAULT_WASHES;
           this.washes.forEach(populateWashDetails);
+          this.washes.forEach(enhanceHistoryAndOwnership);
           changed = true;
         } else if (e.key === "washradar_construction") {
           this.construction = JSON.parse(e.newValue) || DEFAULT_CONSTRUCTION;

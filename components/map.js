@@ -450,6 +450,11 @@ class MapComponent {
             </div>
           </div>
           <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; line-height:1.4;">${c.details}</p>
+          
+          <button class="btn-drone-imagery" data-name="${c.name}" style="margin-top: 12px; width: 100%; padding: 8px; background: rgba(6, 182, 212, 0.15); border: 1px solid var(--color-cyan); border-radius: 4px; color: var(--color-cyan); font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            View Aerial Drone Progress
+          </button>
         </div>
       `;
 
@@ -458,6 +463,16 @@ class MapComponent {
 
       marker.on("popupopen", () => {
         this.selectWash(c.id, false);
+        
+        // Setup drone button
+        const droneBtn = document.querySelector('.btn-drone-imagery');
+        if (droneBtn) {
+          droneBtn.addEventListener('click', () => {
+             const siteName = droneBtn.getAttribute('data-name');
+             document.getElementById('drone-site-name').textContent = siteName;
+             document.getElementById('modal-drone-imagery').style.display = 'flex';
+          });
+        }
       });
 
       this.markers.push({ id: c.id, marker });
@@ -473,13 +488,14 @@ class MapComponent {
       });
       
       this.heatLayer = L.heatLayer(heatPoints, {
-        radius: 40,
-        blur: 25,
+        radius: 45,
+        blur: 35,
         maxZoom: 14,
         gradient: {
-          0.2: 'cyan',
-          0.6: 'yellow',
-          1.0: 'red'
+          0.2: 'rgba(6, 182, 212, 0.5)',  // Cyan/Blue (Low load)
+          0.5: 'rgba(16, 185, 129, 0.8)', // Green (Medium load)
+          0.8: 'rgba(245, 158, 11, 0.9)', // Amber/Yellow (High load)
+          1.0: 'rgba(239, 68, 68, 1.0)'   // Red (Peak Load)
         }
       }).addTo(this.map);
     }

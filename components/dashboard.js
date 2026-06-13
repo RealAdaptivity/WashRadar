@@ -27,10 +27,114 @@ class DashboardComponent {
       });
     });
 
+    const btnCompare = document.getElementById("btn-compare-competitors");
+    if (btnCompare) {
+      btnCompare.addEventListener("click", () => {
+        this.openCompareModal();
+      });
+    }
+
+    const btnCloseCompare = document.getElementById("close-compare-modal");
+    if (btnCloseCompare) {
+      btnCloseCompare.addEventListener("click", () => {
+        document.getElementById("modal-compare-competitors").style.display = "none";
+      });
+    }
+
+    // ROI Calculator logic
+    const roiPriceSlider = document.getElementById("roi-price-slider");
+    const roiVolumeSlider = document.getElementById("roi-volume-slider");
+    const roiPriceDisplay = document.getElementById("roi-price-display");
+    const roiVolumeDisplay = document.getElementById("roi-volume-display");
+    const roiMrrDisplay = document.getElementById("roi-mrr-display");
+
+    const updateROI = () => {
+      if (!roiPriceSlider || !roiVolumeSlider) return;
+      const price = parseInt(roiPriceSlider.value);
+      const volume = parseInt(roiVolumeSlider.value);
+      const mrr = price * volume;
+
+      if (roiPriceDisplay) roiPriceDisplay.textContent = `$${price.toFixed(2)}`;
+      if (roiVolumeDisplay) roiVolumeDisplay.textContent = volume.toLocaleString();
+      if (roiMrrDisplay) roiMrrDisplay.textContent = `$${mrr.toLocaleString()}`;
+    };
+
+    if (roiPriceSlider) roiPriceSlider.addEventListener("input", updateROI);
+    if (roiVolumeSlider) roiVolumeSlider.addEventListener("input", updateROI);
+    // Initial call
+    updateROI();
+
     // Re-render when state updates
     state.subscribe(() => {
       this.render();
     });
+  }
+
+  // --- Compare Matrix Logic ---
+  openCompareModal() {
+    const { washes } = state.getState();
+    const selectedWash = washes.find(w => w.id === this.selectedWashId);
+    if (!selectedWash) return;
+
+    // Helper to calculate distance (basic pythagorean for prototype purposes)
+    const getDistance = (lat1, lng1, lat2, lng2) => {
+      const dx = lat1 - lat2;
+      const dy = lng1 - lng2;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    // Find the 3 closest competitors
+    const sortedCompetitors = washes
+      .filter(w => w.id !== selectedWash.id)
+      .map(w => ({ wash: w, dist: getDistance(selectedWash.lat, selectedWash.lng, w.lat, w.lng) }))
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 3)
+      .map(x => x.wash);
+
+    // Update Headers
+    document.getElementById("matrix-col-0").textContent = selectedWash.name;
+    document.getElementById("matrix-col-1").textContent = sortedCompetitors[0] ? sortedCompetitors[0].name : "-";
+    document.getElementById("matrix-col-2").textContent = sortedCompetitors[1] ? sortedCompetitors[1].name : "-";
+    document.getElementById("matrix-col-3").textContent = sortedCompetitors[2] ? sortedCompetitors[2].name : "-";
+
+    const getBasePrice = w => (w && w.products && w.products.length > 0) ? `$${w.products[0].price.toFixed(2)}` : "N/A";
+    const getUnlimitedPrice = w => (w && w.plans && w.plans.length > 0) ? `$${w.plans[w.plans.length - 1].price.toFixed(2)}/mo` : "N/A";
+    const getRatingHtml = w => w ? `⭐ ${w.rating} (${w.reviewCount})` : "-";
+    const getWaitTime = w => w ? `${w.waitTime} mins` : "-";
+
+    const tbody = document.getElementById("matrix-tbody");
+    tbody.innerHTML = `
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 12px; font-weight: 600;">Base Wash Price</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${getBasePrice(selectedWash)}</td>
+        <td style="padding: 12px;">${getBasePrice(sortedCompetitors[0])}</td>
+        <td style="padding: 12px;">${getBasePrice(sortedCompetitors[1])}</td>
+        <td style="padding: 12px;">${getBasePrice(sortedCompetitors[2])}</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 12px; font-weight: 600;">Top Unlimited Plan</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-cyan);">${getUnlimitedPrice(selectedWash)}</td>
+        <td style="padding: 12px;">${getUnlimitedPrice(sortedCompetitors[0])}</td>
+        <td style="padding: 12px;">${getUnlimitedPrice(sortedCompetitors[1])}</td>
+        <td style="padding: 12px;">${getUnlimitedPrice(sortedCompetitors[2])}</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 12px; font-weight: 600;">Google Rating</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-amber);">${getRatingHtml(selectedWash)}</td>
+        <td style="padding: 12px;">${getRatingHtml(sortedCompetitors[0])}</td>
+        <td style="padding: 12px;">${getRatingHtml(sortedCompetitors[1])}</td>
+        <td style="padding: 12px;">${getRatingHtml(sortedCompetitors[2])}</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; font-weight: 600;">Current Wait Time</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${getWaitTime(selectedWash)}</td>
+        <td style="padding: 12px;">${getWaitTime(sortedCompetitors[0])}</td>
+        <td style="padding: 12px;">${getWaitTime(sortedCompetitors[1])}</td>
+        <td style="padding: 12px;">${getWaitTime(sortedCompetitors[2])}</td>
+      </tr>
+    `;
+
+    document.getElementById("modal-compare-competitors").style.display = "flex";
   }
 
   render() {
@@ -355,6 +459,32 @@ class DashboardComponent {
             elPlans.innerHTML = `<p style="font-size:0.8rem; color:var(--text-muted);">No membership club pricing available.</p>`;
           }
         }
+
+        const elAIPricing = document.getElementById("details-ai-pricing-insight");
+        if (elAIPricing) {
+          if (selectedWash.products && selectedWash.products.length > 0) {
+            const basePrice = Number(selectedWash.products[0].price);
+            let totalBase = 0;
+            let validCount = 0;
+            washes.forEach(w => {
+              if (w.products && w.products.length > 0) {
+                totalBase += Number(w.products[0].price);
+                validCount++;
+              }
+            });
+            const avgBase = validCount > 0 ? (totalBase / validCount) : 10;
+            
+            if (basePrice > avgBase + 1) {
+              elAIPricing.innerHTML = `Your base wash is <strong style="color:var(--color-red);">$${(basePrice - avgBase).toFixed(2)} above</strong> the regional market average of $${avgBase.toFixed(2)}. Consider a temporary $${Math.floor(avgBase)} promotion to capture market share.`;
+            } else if (basePrice < avgBase - 1) {
+              elAIPricing.innerHTML = `Your base wash is <strong style="color:var(--color-green);">$${(avgBase - basePrice).toFixed(2)} below</strong> the regional market average of $${avgBase.toFixed(2)}. You have room to raise prices without losing high-volume traffic.`;
+            } else {
+              elAIPricing.innerHTML = `Your pricing is perfectly aligned with the regional market average of $${avgBase.toFixed(2)}. Focus on driving Unlimited Club conversions.`;
+            }
+          } else {
+            elAIPricing.textContent = "Not enough pricing data to generate AI insights.";
+          }
+        }
       } else {
         detailsRow.style.display = "none";
       }
@@ -404,7 +534,7 @@ class DashboardComponent {
   }
 
   renderChart(washes) {
-    const canvas = document.getElementById("traffic-analytics-chart");
+    const canvas = document.getElementById("dashboard-traffic-chart");
     if (!canvas) return;
 
     const selectedWash = washes.find(w => w.id === this.selectedWashId) || washes[0];
@@ -472,23 +602,23 @@ class DashboardComponent {
           {
             label: `${selectedWash.name} Capacity %`,
             data: dataValues,
-            borderColor: "#6366f1",
+            borderColor: "#06b6d4", // Cyan color
             borderWidth: 3,
             backgroundColor: (context) => {
               const chart = context.chart;
               const { ctx: c2, chartArea } = chart;
               if (!chartArea) return null;
               const gradient = c2.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-              gradient.addColorStop(0, "rgba(99, 102, 241, 0.4)");
-              gradient.addColorStop(1, "rgba(99, 102, 241, 0.0)");
+              gradient.addColorStop(0, "rgba(6, 182, 212, 0.4)");
+              gradient.addColorStop(1, "rgba(6, 182, 212, 0.0)");
               return gradient;
             },
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: "#6366f1",
+            pointBackgroundColor: "#06b6d4",
             pointBorderColor: "#fff",
             pointHoverRadius: 7,
-            pointHoverBackgroundColor: "#6366f1",
+            pointHoverBackgroundColor: "#06b6d4",
             pointHoverBorderColor: "#fff"
           }
         ]

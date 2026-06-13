@@ -3,6 +3,7 @@ import { state } from "../state.js";
 class AnalyticsComponent {
   constructor() {
     this.chart = null;
+    this.revChart = null;
   }
 
   init() {
@@ -12,9 +13,28 @@ class AnalyticsComponent {
     // Subscribe to state updates to refresh analytics numbers
     state.subscribe(() => {
       this.updateMetrics();
+      const selectedWash = this.getSelectedWash();
+      if (selectedWash) {
+        this.renderRevenueChart(selectedWash);
+        this.updateAISentiment(selectedWash);
+      }
     });
     
     this.updateMetrics();
+    setTimeout(() => {
+      const selectedWash = this.getSelectedWash();
+      if (selectedWash) {
+        this.renderRevenueChart(selectedWash);
+        this.updateAISentiment(selectedWash);
+      }
+    }, 500);
+  }
+
+  getSelectedWash() {
+    if (!window.appInstance || !window.appInstance.dashboardComponent) return null;
+    const washId = window.appInstance.dashboardComponent.selectedWashId;
+    const { washes } = state.getState();
+    return washes.find(w => w.id === washId) || washes[0];
   }
 
   updateMetrics() {
@@ -106,31 +126,6 @@ class AnalyticsComponent {
       }
     });
 
-    // 2. Revenue Chart (Bar)
-    const revCanvas = document.getElementById("revenue-chart");
-    if (revCanvas) {
-      new Chart(revCanvas.getContext("2d"), {
-        type: 'bar',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [{
-            label: 'Est. MRR ($)',
-            data: [45000, 48000, 41000, 52000, 61000, 68000],
-            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-            borderRadius: 4
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-          }
-        }
-      });
-    }
-
     // 3. Churn Chart (Doughnut)
     const churnCanvas = document.getElementById("churn-chart");
     if (churnCanvas) {
@@ -153,6 +148,71 @@ class AnalyticsComponent {
           cutout: '75%'
         }
       });
+    }
+  }
+
+  renderRevenueChart(selectedWash) {
+    const revCanvas = document.getElementById("revenue-chart");
+    if (!revCanvas || !selectedWash) return;
+
+    if (this.revChart) {
+      this.revChart.destroy();
+    }
+
+    const basePrice = (selectedWash.products && selectedWash.products.length > 0) ? selectedWash.products[0].price : 10;
+    let trafficMultiplier = 1;
+    if (selectedWash.traffic === "high") trafficMultiplier = 1.5;
+    if (selectedWash.traffic === "low") trafficMultiplier = 0.7;
+
+    const baseRev = (basePrice * 3000) * trafficMultiplier; 
+    
+    // Simulate 6 months trend with some randomization based on the hash of the wash name
+    let hash = 0;
+    for (let i = 0; i < selectedWash.name.length; i++) hash += selectedWash.name.charCodeAt(i);
+    const mod = (hash % 20) / 100; // -10% to +10%
+
+    const data = [
+      Math.round(baseRev * 0.85),
+      Math.round(baseRev * 0.9),
+      Math.round(baseRev * 0.95),
+      Math.round(baseRev * (1 + mod)),
+      Math.round(baseRev * 1.05 * (1 + mod)),
+      Math.round(baseRev * 1.1 * (1 + mod))
+    ];
+
+    this.revChart = new Chart(revCanvas.getContext("2d"), {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Est. MRR ($)',
+          data: data,
+          backgroundColor: 'rgba(16, 185, 129, 0.8)',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+          x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+        }
+      }
+    });
+  }
+
+  updateAISentiment(selectedWash) {
+    const elSummary = document.getElementById("ai-sentiment-summary");
+    const elOpp = document.getElementById("ai-sentiment-opportunity");
+    if (!elSummary || !elOpp || !selectedWash) return;
+
+    if (selectedWash.rating >= 4.5) {
+      elSummary.innerHTML = `<strong>Strength Detected:</strong> Over the last 48 hours, <strong>${selectedWash.name}</strong> has received multiple 5-star reviews praising <strong>friendly staff</strong> and <strong>excellent tire shine</strong>.`;
+      elOpp.innerHTML = `💡 <strong>Opportunity:</strong> Capitalize on this positive sentiment by launching a referral program to turn these highly satisfied customers into brand advocates.`;
+    } else {
+      elSummary.innerHTML = `<strong>Vulnerability Detected:</strong> Over the last 48 hours, <strong>${selectedWash.name}</strong> has received several 1-star and 2-star reviews complaining about <strong>weak vacuum suction</strong> and <strong>dirty drying towels</strong>.`;
+      elOpp.innerHTML = `💡 <strong>Opportunity:</strong> Dispatch maintenance to check the vacuum lines immediately and reply to the negative reviews offering a free wash code to win back trust.`;
     }
   }
 

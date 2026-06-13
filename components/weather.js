@@ -85,19 +85,19 @@ class WeatherComponent {
           </div>
           
           <div class="weather-buttons-grid">
-            <button class="weather-btn ${currentWeather === 'sunny' ? 'active-sunny' : ''}" data-weather="sunny">
+            <button class="weather-btn glass ${currentWeather === 'sunny' ? 'active-sunny' : ''}" data-weather="sunny">
               <span class="weather-icon">☀️</span>
               <span class="weather-label">Sunny & Clear</span>
             </button>
-            <button class="weather-btn ${currentWeather === 'rainy' ? 'active-rainy' : ''}" data-weather="rainy">
+            <button class="weather-btn glass ${currentWeather === 'rainy' ? 'active-rainy' : ''}" data-weather="rainy">
               <span class="weather-icon">🌧️</span>
               <span class="weather-label">Heavy Rain</span>
             </button>
-            <button class="weather-btn ${currentWeather === 'stormy' ? 'active-stormy' : ''}" data-weather="stormy">
+            <button class="weather-btn glass ${currentWeather === 'stormy' ? 'active-stormy' : ''}" data-weather="stormy">
               <span class="weather-icon">⛈️</span>
               <span class="weather-label">Storms & Wind</span>
             </button>
-            <button class="weather-btn ${currentWeather === 'freezing' ? 'active-freezing' : ''}" data-weather="freezing">
+            <button class="weather-btn glass ${currentWeather === 'freezing' ? 'active-freezing' : ''}" data-weather="freezing">
               <span class="weather-icon">❄️</span>
               <span class="weather-label">Freezing / Ice</span>
             </button>

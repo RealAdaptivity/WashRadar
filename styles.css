@@ -1727,6 +1727,92 @@ header.top-header {
   .pricing-grid {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* --- GLOWING WEATHER UI STYLES --- */
+.weather-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .weather-buttons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.weather-btn {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+.weather-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.weather-icon {
+  font-size: 2.5rem;
+  transition: transform 0.3s ease;
+}
+
+.weather-btn:hover .weather-icon {
+  transform: scale(1.1);
+}
+
+.weather-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+/* Active States */
+.weather-btn.active-sunny {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), inset 0 0 10px rgba(245, 158, 11, 0.1);
+}
+.weather-btn.active-sunny .weather-icon {
+  animation: sunnyGlow 2s infinite alternate;
+}
+
+.weather-btn.active-rainy {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+.weather-btn.active-stormy {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), inset 0 0 10px rgba(139, 92, 246, 0.1);
+}
+
+.weather-btn.active-freezing {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2), inset 0 0 10px rgba(6, 182, 212, 0.1);
+}
+
+@keyframes sunnyGlow {
+  from { filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.6)); }
+  to { filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.9)); }
 } 
  / *   - - -   P R I N T   /   P D F   E X P O R T   S T Y L E S   - - -   * /  
  @ m e d i a   p r i n t   {  
