@@ -1081,11 +1081,12 @@ header.top-header {
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
-  z-index: 100;
+  z-index: 9999;
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: 48px 24px;
+  overflow-y: auto;
 }
 
 .modal-overlay.active {
@@ -1101,6 +1102,8 @@ header.top-header {
   display: flex;
   flex-direction: column;
   position: relative;
+  max-height: none;
+  margin: auto;
 }
 
 .modal-close-btn {

@@ -208,6 +208,11 @@ class DashboardComponent {
         const elEqSupplier = document.getElementById("details-wash-eq-supplier");
         const elEquipment = document.getElementById("details-wash-equipment");
         const elHolidays = document.getElementById("details-wash-holidays");
+        
+        if (elEstablished) elEstablished.textContent = `📅 Opened: ${selectedWash.openedDate || "Unknown"}`;
+        if (elAcquisition) elAcquisition.textContent = `🏢 Ownership: ${selectedWash.ownership || "Unknown"}`;
+        if (elChemicals) elChemicals.textContent = `🧪 Chemicals: ${selectedWash.chemicals || "Unknown"}`;
+        if (elEqSupplier) elEqSupplier.textContent = `⚙️ Equipment: ${selectedWash.equipment || "Unknown"}`;
 
         if (elName) elName.textContent = selectedWash.name;
         if (elAddress) elAddress.textContent = selectedWash.address;
