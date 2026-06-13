@@ -53,6 +53,28 @@ class DashboardComponent {
     if (elBuilds) elBuilds.textContent = buildsCount;
     if (elOffers) elOffers.textContent = offersCount;
 
+    // AI Insight Generator
+    const elAiText = document.getElementById("ai-insight-text");
+    if (elAiText) {
+      const currentHour = new Date().getHours();
+      if (closedWashes > 2) {
+        elAiText.innerHTML = `<strong>Opportunity Detected:</strong> ${closedWashes} competitors are currently offline. This is a prime time to capture overflow traffic. Consider launching a flash discount.`;
+      } else if (openWashes > 5 && currentHour > 12 && currentHour < 17) {
+        elAiText.innerHTML = `<strong>High Competition:</strong> Traffic is heavily distributed among ${openWashes} open washes. Ensure your wash wait time is accurate to attract drivers looking for fast service.`;
+      } else {
+        elAiText.innerHTML = `<strong>Market Stable:</strong> Conditions are normal for this time of day. Keep an eye on the ${buildsCount} construction projects that may affect future market share.`;
+      }
+    }
+
+    // AI Action button link to Offers
+    const btnAiAction = document.getElementById("btn-ai-action");
+    if (btnAiAction) {
+      btnAiAction.onclick = () => {
+        const offersTab = document.querySelector('.menu-link[data-tab="offers"]');
+        if (offersTab) offersTab.click();
+      };
+    }
+
     // 2. Filter and render sidebar compact wash list
     const sidebarList = document.getElementById("dash-wash-list");
     if (sidebarList) {
@@ -83,30 +105,67 @@ class DashboardComponent {
           item.style.background = "rgba(99, 102, 241, 0.08)";
         }
 
-        let trafficText = "Low Wait";
-        let trafficClass = "traffic-low";
-        if (w.status !== "open") {
-          trafficText = w.status === "closed" ? "Closed" : "Maint.";
-          trafficClass = w.status === "closed" ? "status-closed" : "status-maintenance";
-        } else if (w.traffic === "moderate") {
-          trafficText = "Moderate";
-          trafficClass = "traffic-moderate";
-        } else if (w.traffic === "high") {
-          trafficText = "Busy";
-          trafficClass = "traffic-high";
+        // Dynamic Traffic Logic based on Day and Time
+        const currentHour = new Date().getHours();
+        const currentDay = new Date().getDay(); // 0 is Sun, 6 is Sat
+        
+        let dayMultiplier = 1.0;
+        if (currentDay === 0 || currentDay === 6) dayMultiplier = 1.4; // Weekends busy
+        if (currentDay === 1 || currentDay === 2) dayMultiplier = 0.8; // Mon/Tue slow
+
+        let currentTrafficVal = (w.trafficHistory && w.trafficHistory[currentHour]) ? w.trafficHistory[currentHour] * dayMultiplier : 0;
+        
+        // Parse operating hours
+        let oh = 0, ch = 24;
+        if (w.hours && !/24\s*hours?/i.test(w.hours)) {
+          const m = w.hours.match(/(\d+)(?::(\d+))?\s*(AM|PM)\s*[-–]\s*(\d+)(?::(\d+))?\s*(AM|PM)/i);
+          if (m) {
+            oh = parseInt(m[1]);
+            const op = m[3].toUpperCase();
+            ch = parseInt(m[4]);
+            const cp = m[6].toUpperCase();
+            if (op === "PM" && oh !== 12) oh += 12;
+            if (op === "AM" && oh === 12) oh = 0;
+            if (cp === "PM" && ch !== 12) ch += 12;
+            if (cp === "AM" && ch === 12) ch = 0;
+          }
         }
 
-        const bulletColor = w.status === "open" 
-          ? (w.traffic === "low" ? "var(--color-green)" : w.traffic === "moderate" ? "var(--color-amber)" : "var(--color-red)")
+        let trafficText = "Low Wait";
+        let trafficClass = "traffic-low";
+        let calcWaitTime = 0;
+
+        if (w.status !== "open" || currentHour < oh || currentHour >= ch) {
+          trafficText = w.status === "closed" ? "Closed" : (w.status === "maintenance" ? "Maint." : "Closed");
+          trafficClass = w.status === "closed" ? "status-closed" : (w.status === "maintenance" ? "status-maintenance" : "status-closed");
+          currentTrafficVal = 0;
+        } else {
+          if (currentTrafficVal > 75) {
+            trafficText = "Busy";
+            trafficClass = "traffic-high";
+            calcWaitTime = Math.floor(currentTrafficVal / 3);
+          } else if (currentTrafficVal > 40) {
+            trafficText = "Moderate";
+            trafficClass = "traffic-moderate";
+            calcWaitTime = Math.floor(currentTrafficVal / 4);
+          } else {
+            trafficText = "Low Wait";
+            trafficClass = "traffic-low";
+            calcWaitTime = Math.floor(currentTrafficVal / 5) || 2;
+          }
+        }
+
+        const bulletColor = (w.status === "open" && currentHour >= oh && currentHour < ch)
+          ? (trafficClass === "traffic-low" ? "var(--color-green)" : trafficClass === "traffic-moderate" ? "var(--color-amber)" : "var(--color-red)")
           : "var(--text-muted)";
 
         item.innerHTML = `
           <span class="wash-compact-status" style="background-color: ${bulletColor}; box-shadow: 0 0 6px ${bulletColor}"></span>
           <div class="wash-compact-info">
             <div class="wash-compact-name">${w.name} <span style="font-size: 0.72rem; color: var(--color-amber); font-weight: 600; margin-left: 2px;">★ ${w.rating}</span></div>
-            <div class="wash-compact-sub">${w.status === "open" ? `${w.waitTime}m wait time` : "Temporarily offline"}</div>
+            <div class="wash-compact-sub">${(w.status === "open" && currentHour >= oh && currentHour < ch) ? `${calcWaitTime}m wait time` : "Temporarily offline"}</div>
           </div>
-          <span class="wash-compact-badge ${w.status === "open" ? "" : trafficClass}" style="color: ${w.status === "open" ? bulletColor : ""}; font-weight: 700; font-size: 0.8rem;">
+          <span class="wash-compact-badge ${(w.status === "open" && currentHour >= oh && currentHour < ch) ? "" : trafficClass}" style="color: ${(w.status === "open" && currentHour >= oh && currentHour < ch) ? bulletColor : ""}; font-weight: 700; font-size: 0.8rem;">
             ${trafficText}
           </span>
         `;
@@ -323,8 +382,17 @@ class DashboardComponent {
    * hours forced to 0, so the chart never shows traffic when the wash is closed.
    */
   getMaskedTraffic(wash) {
+    if (wash.status === "closed" || wash.status === "maintenance") {
+      return Array.from({ length: 24 }, () => 0);
+    }
+    
+    const currentDay = new Date().getDay();
+    let dayMultiplier = 1.0;
+    if (currentDay === 0 || currentDay === 6) dayMultiplier = 1.4;
+    if (currentDay === 1 || currentDay === 2) dayMultiplier = 0.8;
+
     const raw = Array.from({ length: 24 }, (_, i) =>
-      (wash.trafficHistory && wash.trafficHistory[i] != null) ? wash.trafficHistory[i] : 0
+      (wash.trafficHistory && wash.trafficHistory[i] != null) ? Math.min(100, wash.trafficHistory[i] * dayMultiplier) : 0
     );
     const { open, close } = this.parseOperatingHours(wash.hours);
     return raw.map((v, i) => (i >= open && i < close) ? v : 0);

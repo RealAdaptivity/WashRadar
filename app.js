@@ -83,20 +83,73 @@ class AppController {
       });
     }
 
-    if (btnSignup && formAuth) {
-      btnSignup.addEventListener("click", async (e) => {
+    const tabSignin = document.getElementById("tab-signin");
+    const tabSignup = document.getElementById("tab-signup");
+    const signupFields = document.getElementById("signup-fields");
+    const btnAuthSubmit = document.getElementById("btn-auth-submit");
+    let isSignupMode = false;
+
+    if (tabSignin && tabSignup) {
+      tabSignin.addEventListener("click", () => {
+        isSignupMode = false;
+        signupFields.style.display = "none";
+        tabSignin.style.borderBottom = "2px solid var(--color-cyan)";
+        tabSignin.style.color = "var(--text-primary)";
+        tabSignup.style.borderBottom = "none";
+        tabSignup.style.color = "var(--text-muted)";
+        btnAuthSubmit.textContent = "Sign In";
+        
+        // Remove required from extra fields
+        document.getElementById("auth-firstname").removeAttribute("required");
+        document.getElementById("auth-lastname").removeAttribute("required");
+        document.getElementById("auth-wash-name").removeAttribute("required");
+        document.getElementById("auth-wash-location").removeAttribute("required");
+      });
+
+      tabSignup.addEventListener("click", () => {
+        isSignupMode = true;
+        signupFields.style.display = "flex";
+        tabSignup.style.borderBottom = "2px solid var(--color-cyan)";
+        tabSignup.style.color = "var(--text-primary)";
+        tabSignin.style.borderBottom = "none";
+        tabSignin.style.color = "var(--text-muted)";
+        btnAuthSubmit.textContent = "Sign Up";
+        
+        // Make extra fields required
+        document.getElementById("auth-firstname").setAttribute("required", "true");
+        document.getElementById("auth-lastname").setAttribute("required", "true");
+        document.getElementById("auth-wash-name").setAttribute("required", "true");
+        document.getElementById("auth-wash-location").setAttribute("required", "true");
+      });
+    }
+
+    if (formAuth) {
+      formAuth.addEventListener("submit", async (e) => {
         e.preventDefault();
         if (!formAuth.checkValidity()) {
           formAuth.reportValidity();
           return;
         }
+        
         const email = document.getElementById("auth-email").value;
         const password = document.getElementById("auth-password").value;
         
         try {
-          await state.signUp(email, password);
-          modalAuth.classList.remove("active");
-          state.addNotification("Welcome", "Your account has been created.");
+          if (isSignupMode) {
+            const metadata = {
+              first_name: document.getElementById("auth-firstname").value,
+              last_name: document.getElementById("auth-lastname").value,
+              wash_name: document.getElementById("auth-wash-name").value,
+              wash_location: document.getElementById("auth-wash-location").value
+            };
+            await state.signUp(email, password, metadata);
+            modalAuth.classList.remove("active");
+            state.addNotification("Welcome", "Your account has been created.");
+          } else {
+            await state.signIn(email, password);
+            modalAuth.classList.remove("active");
+            state.addNotification("Welcome Back", "You have successfully signed in.");
+          }
           if (authError) authError.style.display = "none";
         } catch(err) {
           if (authError) {
@@ -107,29 +160,7 @@ class AppController {
       });
     }
 
-    if (btnSignin && formAuth) {
-      btnSignin.addEventListener("click", async (e) => {
-        e.preventDefault();
-        if (!formAuth.checkValidity()) {
-          formAuth.reportValidity();
-          return;
-        }
-        const email = document.getElementById("auth-email").value;
-        const password = document.getElementById("auth-password").value;
-        
-        try {
-          await state.signIn(email, password);
-          modalAuth.classList.remove("active");
-          state.addNotification("Welcome Back", "You have successfully signed in.");
-          if (authError) authError.style.display = "none";
-        } catch(err) {
-          if (authError) {
-            authError.textContent = err.message;
-            authError.style.display = "block";
-          }
-        }
-      });
-    }
+
 
     if (btnLogout) {
       btnLogout.addEventListener("click", async () => {
@@ -430,6 +461,8 @@ class AppController {
         <div class="operator-banner-actions">
           <button class="btn-primary operator-banner-btn" id="btn-banner-status">Update Status</button>
           <button class="btn-cyan operator-banner-btn" id="btn-banner-switch-wash">Switch Wash</button>
+          <button class="btn-secondary operator-banner-btn" id="btn-banner-alerts">Alerts</button>
+          <button class="btn-secondary operator-banner-btn" id="btn-banner-api">API Hub</button>
         </div>
       </div>
     `;
@@ -442,6 +475,16 @@ class AppController {
 
     document.getElementById("btn-banner-switch-wash").addEventListener("click", () => {
       this.openSwitchWashModal();
+    });
+
+    document.getElementById("btn-banner-alerts").addEventListener("click", () => {
+      const modal = document.getElementById("modal-competitor-alerts");
+      if (modal) modal.classList.add("active");
+    });
+
+    document.getElementById("btn-banner-api").addEventListener("click", () => {
+      const modal = document.getElementById("modal-api-hub");
+      if (modal) modal.classList.add("active");
     });
   }
 
@@ -490,6 +533,23 @@ class AppController {
   }
 
   setupOperatorForm() {
+    // Competitor Alerts Modal
+    const modalAlerts = document.getElementById("modal-competitor-alerts");
+    const closeAlerts = document.getElementById("close-competitor-alerts-modal");
+    const formAlerts = document.getElementById("form-competitor-alerts");
+    if (closeAlerts) closeAlerts.addEventListener("click", () => modalAlerts.classList.remove("active"));
+    if (formAlerts) {
+      formAlerts.addEventListener("submit", (e) => {
+        e.preventDefault();
+        modalAlerts.classList.remove("active");
+        state.addNotification("Alerts Saved", "Competitor tracking triggers updated.");
+      });
+    }
+
+    // API Hub Modal
+    const modalApi = document.getElementById("modal-api-hub");
+    const closeApi = document.getElementById("close-api-hub-modal");
+    if (closeApi) closeApi.addEventListener("click", () => modalApi.classList.remove("active"));
     // 1. Status Update Modal Form
     const modalUpdate = document.getElementById("modal-operator-update");
     const closeBtnUpdate = document.getElementById("close-operator-update-modal");

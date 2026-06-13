@@ -189,6 +189,17 @@
         <!-- 1. DASHBOARD VIEW -->
         <section id="dashboard-section" class="view-section active">
 
+          <!-- AI Insights Widget -->
+          <div class="ai-widget glass" style="margin-bottom: 24px; padding: 24px; border-radius: var(--border-radius-lg); border: 1px solid rgba(99, 102, 241, 0.4); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); display: flex; gap: 16px; align-items: center;">
+            <div style="font-size: 2.5rem; animation: pulse 2s infinite;">🤖</div>
+            <div style="flex-grow: 1;">
+              <h3 style="font-family: var(--font-display); font-size: 1.1rem; color: var(--color-primary); margin-bottom: 4px;">AI-Powered Recommendation</h3>
+              <p id="ai-insight-text" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Analyzing current market conditions...</p>
+            </div>
+            <button class="btn-primary" id="btn-ai-action" style="font-size: 0.85rem; padding: 8px 16px; white-space: nowrap;">Create Promotion</button>
+          </div>
+
+
           <!-- Metric Widget Cards -->
           <div class="dashboard-grid">
             <div class="metric-card washes glass">
@@ -414,6 +425,10 @@
                   <input type="checkbox" id="filter-construction" checked>
                   <span>Show New Builds Underway</span>
                 </label>
+                <label class="filter-option" style="margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                  <input type="checkbox" id="filter-heatmap">
+                  <span style="color: var(--color-red);">🔥 Show Traffic Heatmap</span>
+                </label>
               </div>
 
               <div class="map-filter-group glass" style="margin-top: 16px;">
@@ -628,6 +643,74 @@
     </div>
   </div>
 
+  <!-- Competitor Alerts Modal -->
+  <div class="modal-overlay" id="modal-competitor-alerts">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-competitor-alerts-modal">✕</button>
+      <h2 class="modal-title">Custom Competitor Alerts</h2>
+      <p class="modal-subtitle">Get notified when rivals change pricing, launch promos, or adjust hours.</p>
+
+      <form id="form-competitor-alerts">
+        <div class="form-group">
+          <label>Alert Triggers</label>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+              <input type="checkbox" checked /> Price drops below your current pricing
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+              <input type="checkbox" checked /> New unlimited club promotions are published
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+              <input type="checkbox" /> Major equipment downtime or extended closures
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
+              <input type="checkbox" /> New construction permits filed within 10 miles
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="alert-radius">Alert Radius</label>
+          <select id="alert-radius">
+            <option value="5">5 miles</option>
+            <option value="10" selected>10 miles</option>
+            <option value="25">25 miles</option>
+            <option value="50">50 miles</option>
+          </select>
+        </div>
+
+        <div class="form-actions" style="margin-top: 24px;">
+          <button type="submit" class="btn-primary" style="width: 100%;">Save Alert Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- API Hub Modal -->
+  <div class="modal-overlay" id="modal-api-hub">
+    <div class="modal-content glass">
+      <button class="modal-close-btn" id="close-api-hub-modal">✕</button>
+      <h2 class="modal-title">API & Integrations Hub</h2>
+      <p class="modal-subtitle">Connect your point-of-sale or site cameras to automatically update traffic metrics.</p>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+        <div class="form-group">
+          <label>Your API Key</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" value="sk_test_7f9a2b8e4c1d6h5g9" readonly style="flex: 1; background: rgba(0,0,0,0.3); color: var(--text-muted); cursor: not-allowed;">
+            <button class="btn-secondary" type="button" style="padding: 0 16px;" onclick="alert('API Key copied!')">Copy</button>
+          </div>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px;">
+          <h4 style="margin-bottom: 8px; color: var(--color-cyan);">POS Integrations</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">Automatically push wait times to WashRadar based on DRB or Sonny's queue lengths.</p>
+          <button class="btn-cyan" type="button" style="width: 100%;" onclick="alert('Integration workflow launched.')">Connect DRB Systems</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Report Construction Site Modal -->
   <div class="modal-overlay" id="modal-report-build">
     <div class="modal-content glass">
@@ -809,6 +892,11 @@
         <p class="modal-subtitle">Sign in or create an account to save your plans.</p>
       </div>
 
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+        <button type="button" id="tab-signin" style="flex: 1; background: none; border: none; color: var(--text-primary); font-weight: bold; border-bottom: 2px solid var(--color-cyan); padding-bottom: 8px; cursor: pointer;">Sign In</button>
+        <button type="button" id="tab-signup" style="flex: 1; background: none; border: none; color: var(--text-muted); font-weight: bold; padding-bottom: 8px; cursor: pointer;">Sign Up</button>
+      </div>
+
       <form id="form-auth" style="display: flex; flex-direction: column; gap: 16px;">
         <div class="form-group">
           <label for="auth-email">Email Address</label>
@@ -819,11 +907,31 @@
           <input type="password" id="auth-password" placeholder="••••••••" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
         </div>
         
+        <div id="signup-fields" style="display: none; flex-direction: column; gap: 16px;">
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label for="auth-firstname">First Name</label>
+              <input type="text" id="auth-firstname" placeholder="John" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="auth-lastname">Last Name</label>
+              <input type="text" id="auth-lastname" placeholder="Doe" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="auth-wash-name">Wash Name</label>
+            <input type="text" id="auth-wash-name" placeholder="e.g. Tommy Terrific's" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+          </div>
+          <div class="form-group">
+            <label for="auth-wash-location">Wash Location (City, State)</label>
+            <input type="text" id="auth-wash-location" placeholder="e.g. Plano, TX" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+          </div>
+        </div>
+        
         <div id="auth-error" style="color: var(--color-red); font-size: 0.8rem; display: none; text-align: center;"></div>
         
-        <div class="form-actions" style="display: flex; gap: 12px; margin-top: 8px;">
-          <button type="button" class="btn-secondary" id="btn-signup" style="flex: 1;">Sign Up</button>
-          <button type="submit" class="btn-primary" id="btn-signin" style="flex: 1;">Sign In</button>
+        <div class="form-actions" style="margin-top: 8px;">
+          <button type="submit" class="btn-primary" id="btn-auth-submit" style="width: 100%;">Sign In</button>
         </div>
       </form>
     </div>
@@ -832,6 +940,8 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Leaflet Heatmap Plugin -->
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
   <!-- Chart.js for analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

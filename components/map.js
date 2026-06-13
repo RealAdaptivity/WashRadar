@@ -20,6 +20,8 @@ class MapComponent {
     this.showFullService = true;
     this.showExpress = true;
     this.showSelfServe = true;
+    this.showHeatmap = false;
+    this.heatLayer = null;
   }
 
   init() {
@@ -113,6 +115,14 @@ class MapComponent {
         this.render();
       });
     }
+
+    const optHeatmap = document.getElementById("filter-heatmap");
+    if (optHeatmap) {
+      optHeatmap.addEventListener("change", (e) => {
+        this.showHeatmap = e.target.checked;
+        this.render();
+      });
+    }
   }
 
   // Triggered when a list card or popup is selected
@@ -150,6 +160,10 @@ class MapComponent {
     // 1. Clear existing markers
     this.markers.forEach(m => this.map.removeLayer(m.marker));
     this.markers = [];
+    if (this.heatLayer) {
+      this.map.removeLayer(this.heatLayer);
+      this.heatLayer = null;
+    }
 
     // 2. Filter data
     const filteredWashes = washes.filter(w => {
@@ -381,6 +395,27 @@ class MapComponent {
 
       this.markers.push({ id: c.id, marker });
     });
+
+    // 5. Heatmap Layer
+    if (this.showHeatmap && typeof L.heatLayer !== 'undefined') {
+      const heatPoints = filteredWashes.map(w => {
+        let intensity = 0.2;
+        if (w.traffic === "moderate") intensity = 0.6;
+        if (w.traffic === "high") intensity = 1.0;
+        return [w.lat, w.lng, intensity];
+      });
+      
+      this.heatLayer = L.heatLayer(heatPoints, {
+        radius: 40,
+        blur: 25,
+        maxZoom: 14,
+        gradient: {
+          0.2: 'cyan',
+          0.6: 'yellow',
+          1.0: 'red'
+        }
+      }).addTo(this.map);
+    }
   }
 }
 

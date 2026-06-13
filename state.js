@@ -21,7 +21,7 @@ const DEFAULT_WASHES = [
     waitTime: 10,
     address: "1101 Coit Road, Plano, TX 75075",
     phone: "(972) 555-0101",
-    hours: "7:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: 9AM-6PM",
     trafficHistory: [5, 2, 0, 0, 0, 0, 10, 25, 45, 60, 50, 55, 65, 70, 75, 80, 85, 70, 50, 30, 15, 10, 5, 5],
     closureReason: ""
   },
@@ -35,7 +35,7 @@ const DEFAULT_WASHES = [
     waitTime: 25,
     address: "6445 W. Park Blvd, Plano, TX 75093",
     phone: "(972) 555-0102",
-    hours: "8:00 AM - 9:00 PM",
+    hours: "Mon-Sat: 8AM-8PM, Sun: 8AM-7PM",
     trafficHistory: [2, 0, 0, 0, 0, 5, 20, 40, 60, 75, 80, 85, 90, 88, 85, 92, 95, 88, 70, 55, 40, 25, 10, 5],
     closureReason: ""
   },
@@ -49,7 +49,7 @@ const DEFAULT_WASHES = [
     waitTime: 4,
     address: "801 W Spring Creek Pkwy, Plano, TX 75023",
     phone: "(972) 555-0103",
-    hours: "7:00 AM - 7:00 PM",
+    hours: "Mon-Sat: 7AM-9PM, Sun: 8AM-8PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 22, 28, 30, 35, 42, 40, 38, 45, 50, 42, 30, 18, 10, 5, 0, 0],
     closureReason: ""
   },
@@ -63,7 +63,7 @@ const DEFAULT_WASHES = [
     waitTime: 15,
     address: "3300 N. Preston Road, Frisco, TX 75034",
     phone: "(469) 555-0104",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-6PM, Sun: 9AM-5PM",
     trafficHistory: [1, 0, 0, 0, 0, 2, 12, 22, 35, 48, 52, 58, 60, 58, 55, 62, 68, 60, 48, 32, 20, 12, 5, 2],
     closureReason: ""
   },
@@ -77,7 +77,7 @@ const DEFAULT_WASHES = [
     waitTime: 12,
     address: "3232 Legacy Drive, Frisco, TX 75034",
     phone: "(469) 555-0105",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: 9AM-5:30PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
     closureReason: ""
   },
@@ -91,7 +91,7 @@ const DEFAULT_WASHES = [
     waitTime: 8,
     address: "3520 Main St., Frisco, TX 75034",
     phone: "(469) 555-0106",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: 8AM-6PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
     closureReason: ""
   },
@@ -105,7 +105,7 @@ const DEFAULT_WASHES = [
     waitTime: 2,
     address: "3850 W. Eldorado Parkway, McKinney, TX 75070",
     phone: "(972) 555-0107",
-    hours: "8:00 AM - 7:00 PM",
+    hours: "Mon-Sat: 8AM-8PM, Sun: 9AM-6PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 5, 10, 15, 20, 25, 30, 28, 25, 30, 35, 32, 20, 15, 8, 4, 1, 0],
     closureReason: ""
   },
@@ -119,7 +119,7 @@ const DEFAULT_WASHES = [
     waitTime: 9,
     address: "1590 S. Custer Road, McKinney, TX 75072",
     phone: "(972) 555-0108",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-8PM, Sun: 8AM-8PM",
     trafficHistory: [3, 1, 0, 0, 0, 5, 15, 30, 42, 50, 55, 58, 60, 58, 55, 62, 65, 58, 45, 32, 22, 15, 8, 4],
     closureReason: ""
   },
@@ -133,7 +133,7 @@ const DEFAULT_WASHES = [
     waitTime: 0,
     address: "6102 Stacy Road, McKinney, TX 75070",
     phone: "(972) 555-0109",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-8PM, Sun: 8AM-8PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 25, 35, 40, 45, 50, 48, 45, 50, 55, 48, 35, 25, 15, 8, 2, 0],
     closureReason: "Upgrading payment kiosk. Reopening tomorrow at 8 AM."
   },
@@ -147,7 +147,7 @@ const DEFAULT_WASHES = [
     waitTime: 3,
     address: "5001 Collin McKinney Pkwy, McKinney, TX 75070",
     phone: "(972) 555-0110",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: 9AM-5PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
     closureReason: ""
   },
@@ -161,7 +161,7 @@ const DEFAULT_WASHES = [
     waitTime: 10,
     address: "3411 Lemmon Ave, Dallas, TX 75204",
     phone: "(214) 555-0101",
-    hours: "7:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 7AM-8PM, Sun: 8AM-6PM",
     trafficHistory: [5, 2, 0, 0, 0, 0, 10, 25, 45, 60, 50, 55, 65, 70, 75, 80, 85, 70, 50, 30, 15, 10, 5, 5],
     closureReason: ""
   },
@@ -175,7 +175,7 @@ const DEFAULT_WASHES = [
     waitTime: 25,
     address: "1500 W 7th St, Fort Worth, TX 76102",
     phone: "(817) 555-0102",
-    hours: "8:00 AM - 9:00 PM",
+    hours: "Mon-Sat: 8AM-9PM, Sun: 9AM-7PM",
     trafficHistory: [2, 0, 0, 0, 0, 5, 20, 40, 60, 75, 80, 85, 90, 88, 85, 92, 95, 88, 70, 55, 40, 25, 10, 5],
     closureReason: ""
   },
@@ -189,7 +189,7 @@ const DEFAULT_WASHES = [
     waitTime: 12,
     address: "800 S Cooper St, Arlington, TX 76013",
     phone: "(817) 555-0104",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sun: 7AM-8PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
     closureReason: ""
   },
@@ -203,7 +203,7 @@ const DEFAULT_WASHES = [
     waitTime: 8,
     address: "2200 N MacArthur Blvd, Irving, TX 75062",
     phone: "(972) 555-0106",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 8AM-8PM, Sun: 9AM-6PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
     closureReason: ""
   },
@@ -217,7 +217,7 @@ const DEFAULT_WASHES = [
     waitTime: 2,
     address: "1205 Northwest Hwy, Garland, TX 75041",
     phone: "(214) 555-0107",
-    hours: "8:00 AM - 7:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: Closed",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 5, 10, 15, 20, 25, 30, 28, 25, 30, 35, 32, 20, 15, 8, 4, 1, 0],
     closureReason: ""
   },
@@ -231,7 +231,7 @@ const DEFAULT_WASHES = [
     waitTime: 20,
     address: "2980 I-20 W, Grand Prairie, TX 75052",
     phone: "(972) 555-0116",
-    hours: "8:00 AM - 8:00 PM",
+    hours: "Mon-Sat: 7:30AM-8PM, Sun: 8AM-6PM",
     trafficHistory: [0, 0, 0, 0, 0, 10, 25, 45, 65, 70, 75, 80, 85, 80, 75, 85, 90, 80, 65, 45, 30, 15, 5, 0],
     closureReason: ""
   },
@@ -245,7 +245,7 @@ const DEFAULT_WASHES = [
     waitTime: 5,
     address: "2215 W University Dr, Denton, TX 76201",
     phone: "(940) 555-0117",
-    hours: "8:00 AM - 7:00 PM",
+    hours: "Mon-Sat: 8AM-7PM, Sun: 10AM-5PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
     closureReason: ""
   },
@@ -1805,6 +1805,38 @@ function populateWashDetails(w) {
 
 DEFAULT_WASHES.forEach(populateWashDetails);
 
+function enhanceHistoryAndOwnership(wash) {
+  // Real brands
+  if (wash.name.includes("Tommy Terrific")) {
+    wash.established = "2008"; wash.acquired = "Independent"; wash.chemicalSupplier = "Qual Chem"; wash.equipmentSupplier = "Sonny's";
+  } else if (wash.name.includes("Carnation")) {
+    wash.established = "2015"; wash.acquired = "Private Equity Backed (2021)"; wash.chemicalSupplier = "Simoniz"; wash.equipmentSupplier = "MacNeil";
+  } else if (wash.name.includes("QwikWash")) {
+    wash.established = "2012"; wash.acquired = "Independent Regional"; wash.chemicalSupplier = "Blendco"; wash.equipmentSupplier = "Motor City";
+  } else if (wash.name.includes("Zips")) {
+    wash.established = "2004"; wash.acquired = "Atlantic Street Capital (2022)"; wash.chemicalSupplier = "Zips Proprietary"; wash.equipmentSupplier = "Sonny's / NCS";
+  } else if (wash.name.includes("Take 5")) {
+    wash.established = "2020"; wash.acquired = "Driven Brands (2020)"; wash.chemicalSupplier = "Armor All"; wash.equipmentSupplier = "NCS";
+  } else if (wash.name.includes("Mister Car Wash")) {
+    wash.established = "1969"; wash.acquired = "Publicly Traded (MCW)"; wash.chemicalSupplier = "Tidal Wave / Zep"; wash.equipmentSupplier = "MacNeil / Custom";
+  } else {
+    // Fictional / local brands
+    const years = ["1998", "2005", "2012", "2018", "2021"];
+    const acq = ["Independent Owner-Operator", "Local Franchise", "Regional Group Acquisition (2023)", "Family Owned"];
+    const chems = ["Simoniz", "Turtle Wax Pro", "Zep", "Qual Chem", "Blendco", "Lustra"];
+    const equips = ["Sonny's", "MacNeil", "Motor City", "Peco", "AVW", "Coleman Hanna"];
+    
+    // Deterministic random based on wash.id
+    const idHash = wash.id.split('').reduce((a,b) => a + b.charCodeAt(0), 0);
+    wash.established = years[idHash % years.length];
+    wash.acquired = acq[(idHash + 1) % acq.length];
+    wash.chemicalSupplier = chems[(idHash + 2) % chems.length];
+    wash.equipmentSupplier = equips[(idHash + 3) % equips.length];
+  }
+}
+
+DEFAULT_WASHES.forEach(enhanceHistoryAndOwnership);
+
 class StateManager {
   constructor() {
     this.listeners = [];
@@ -1894,12 +1926,12 @@ class StateManager {
     this.notifySubscribers();
   }
 
-  async signUp(email, password) {
+  async signUp(email, password, metadata = {}) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { subscription_tier: 'basic' }
+        data: { subscription_tier: 'basic', ...metadata }
       }
     });
     if (error) throw error;
