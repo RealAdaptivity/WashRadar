@@ -22,6 +22,7 @@ class MapComponent {
     this.showSelfServe = true;
     this.showHeatmap = false;
     this.heatLayer = null;
+    this.isDriverMode = true; // default to customer view until operator logs in
   }
 
   init() {
@@ -319,7 +320,9 @@ class MapComponent {
               : ""
           }
 
-          <button class="popup-action" data-id="${w.id}">View Details</button>
+          <button class="popup-action" data-id="${w.id}">
+            ${this.isDriverMode ? "🚙 Buy Ticket / Navigate" : "⚙️ View Details"}
+          </button>
         </div>
       `;
 

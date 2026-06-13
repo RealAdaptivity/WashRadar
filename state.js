@@ -1862,6 +1862,15 @@ class StateManager {
     
     this.initDb();
     this.initAuth();
+    this.requestNotificationPermission();
+  }
+
+  requestNotificationPermission() {
+    if ("Notification" in window) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
+      }
+    }
   }
 
   // --- Notification Methods ---
@@ -1879,6 +1888,14 @@ class StateManager {
     // Keep max 20 notifications
     if (this.notifications.length > 20) {
       this.notifications.pop();
+    }
+    
+    // Trigger OS Push Notification
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, {
+        body: body,
+        icon: "washradar_logo.png"
+      });
     }
     
     this.notifySubscribers();
@@ -2124,6 +2141,26 @@ class StateManager {
     this.construction = JSON.parse(localStorage.getItem("washradar_construction")) || DEFAULT_CONSTRUCTION;
     this.offers = JSON.parse(localStorage.getItem("washradar_offers")) || DEFAULT_OFFERS;
     this.notify();
+
+    // Cross-tab simulated real-time sync
+    if (!this.storageListenerAdded) {
+      window.addEventListener('storage', (e) => {
+        let changed = false;
+        if (e.key === "washradar_washes") {
+          this.washes = JSON.parse(e.newValue) || DEFAULT_WASHES;
+          this.washes.forEach(populateWashDetails);
+          changed = true;
+        } else if (e.key === "washradar_construction") {
+          this.construction = JSON.parse(e.newValue) || DEFAULT_CONSTRUCTION;
+          changed = true;
+        } else if (e.key === "washradar_offers") {
+          this.offers = JSON.parse(e.newValue) || DEFAULT_OFFERS;
+          changed = true;
+        }
+        if (changed) this.notify();
+      });
+      this.storageListenerAdded = true;
+    }
   }
 
   saveState() {

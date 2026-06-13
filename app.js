@@ -115,11 +115,32 @@ class AppController {
         tabSignin.style.color = "var(--text-muted)";
         btnAuthSubmit.textContent = "Sign Up";
         
-        // Make extra fields required
+        
+        // Make extra fields required conditionally based on type
         document.getElementById("auth-firstname").setAttribute("required", "true");
         document.getElementById("auth-lastname").setAttribute("required", "true");
-        document.getElementById("auth-wash-name").setAttribute("required", "true");
-        document.getElementById("auth-wash-location").setAttribute("required", "true");
+        
+        const isOperator = document.querySelector('input[name="auth-account-type"]:checked').value === 'operator';
+        if (isOperator) {
+          document.getElementById("auth-wash-name").setAttribute("required", "true");
+          document.getElementById("auth-wash-location").setAttribute("required", "true");
+        }
+      });
+      
+      const accountTypeRadios = document.querySelectorAll('input[name="auth-account-type"]');
+      const opFields = document.getElementById("auth-operator-fields");
+      accountTypeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          if (e.target.value === 'operator') {
+            opFields.style.display = "flex";
+            document.getElementById("auth-wash-name").setAttribute("required", "true");
+            document.getElementById("auth-wash-location").setAttribute("required", "true");
+          } else {
+            opFields.style.display = "none";
+            document.getElementById("auth-wash-name").removeAttribute("required");
+            document.getElementById("auth-wash-location").removeAttribute("required");
+          }
+        });
       });
     }
 
@@ -139,9 +160,12 @@ class AppController {
             const metadata = {
               first_name: document.getElementById("auth-firstname").value,
               last_name: document.getElementById("auth-lastname").value,
-              wash_name: document.getElementById("auth-wash-name").value,
-              wash_location: document.getElementById("auth-wash-location").value
+              account_type: document.querySelector('input[name="auth-account-type"]:checked').value
             };
+            if (metadata.account_type === 'operator') {
+              metadata.wash_name = document.getElementById("auth-wash-name").value;
+              metadata.wash_location = document.getElementById("auth-wash-location").value;
+            }
             await state.signUp(email, password, metadata);
             modalAuth.classList.remove("active");
             state.addNotification("Welcome", "Your account has been created.");
@@ -228,10 +252,29 @@ class AppController {
   }
 
   updateBillingUI() {
-    const { subscriptionTier } = state.getState();
+    const { subscriptionTier, currentUser } = state.getState();
     const display = document.getElementById("current-tier-display");
     if (display) {
       display.textContent = subscriptionTier.charAt(0).toUpperCase() + subscriptionTier.slice(1);
+    }
+
+    // Toggle Operator vs Customer packages
+    const opPackages = document.getElementById("operator-packages");
+    const custPackages = document.getElementById("customer-packages");
+    
+    let isCustomer = false;
+    if (currentUser && currentUser.user_metadata && currentUser.user_metadata.account_type === 'customer') {
+      isCustomer = true;
+    }
+    
+    if (opPackages && custPackages) {
+      if (isCustomer) {
+        opPackages.style.display = "none";
+        custPackages.style.display = "grid";
+      } else {
+        opPackages.style.display = "grid";
+        custPackages.style.display = "none";
+      }
     }
     
     // Update plan buttons visually
@@ -410,18 +453,43 @@ class AppController {
         this.isOperatorMode = !this.isOperatorMode;
         
         // Update styling and states
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+        const analyticsTab = document.querySelector('.menu-link[data-tab="analytics"]')?.closest('.menu-item');
+        const constructionTab = document.querySelector('.menu-link[data-tab="construction"]')?.closest('.menu-item');
+        const weatherTab = document.querySelector('.menu-link[data-tab="weather"]')?.closest('.menu-item');
+
         if (this.isOperatorMode) {
           opToggleBtn.classList.add("active");
           opToggleBtn.innerHTML = `🏪 Customer Mode`;
           opToggleBtn.style.background = "rgba(6, 182, 212, 0.1)";
           opToggleBtn.style.color = "var(--color-cyan)";
           opToggleBtn.style.borderColor = "rgba(6, 182, 212, 0.2)";
+          
+          if (analyticsTab) analyticsTab.style.display = "flex";
+          if (constructionTab) constructionTab.style.display = "flex";
+          if (weatherTab) weatherTab.style.display = "flex";
         } else {
           opToggleBtn.classList.remove("active");
           opToggleBtn.innerHTML = `⚙️ Operator Portal`;
           opToggleBtn.style.background = "rgba(99, 102, 241, 0.1)";
           opToggleBtn.style.color = "var(--color-primary)";
           opToggleBtn.style.borderColor = "rgba(99, 102, 241, 0.2)";
+          
+          // Driver Mode limits tabs
+          if (analyticsTab) analyticsTab.style.display = "none";
+          if (constructionTab) constructionTab.style.display = "none";
+          if (weatherTab) weatherTab.style.display = "none";
+          
+          // Force switch to map
+          const mapTab = document.querySelector('.menu-link[data-tab="map"]');
+          if (mapTab && this.currentTab !== 'map') mapTab.click();
+        }
+
+        // Pass mode to map
+        if (this.mapComponent) {
+          this.mapComponent.isDriverMode = !this.isOperatorMode;
+          this.mapComponent.render();
         }
 
         // Toggle components operator states
