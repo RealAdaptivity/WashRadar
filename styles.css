@@ -133,6 +133,7 @@ aside.sidebar {
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -439,9 +440,6 @@ header.top-header {
 }
 .weather-ops-table tbody tr:hover {
   background: var(--bg-card-hover);
-}
-
-  color: var(--text-primary);
 }
 
 /* Dashboard Layout panels */
@@ -1409,4 +1407,39 @@ header.top-header {
     grid-template-columns: 1fr;
   }
 }
+}
+
+/* Dashboard Service Type Filter Buttons */
+.filter-type-grid {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-secondary);
+  padding: 4px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  width: fit-content;
+}
+
+.type-filter-btn {
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+  transition: var(--transition-fast);
+}
+
+.type-filter-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.type-filter-btn.active {
+  background: var(--color-primary-glow);
+  color: var(--color-primary);
+  font-weight: 600;
 }

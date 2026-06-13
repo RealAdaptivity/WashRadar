@@ -4,6 +4,12 @@
  * traffic metrics, new construction, and active promotions.
  */
 
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
 const DEFAULT_WASHES = [
   {
     id: "wash-1",
@@ -1677,6 +1683,51 @@ function populateWashDetails(w) {
       { name: "VIP Unlimited Ceramic Club", price: 29.99 }
     ];
   }
+
+  // Generate structured weeklyHours based on w.hours if not already set
+  if (!w.weeklyHours) {
+    if (w.hours.toLowerCase().includes("24 hours")) {
+      w.weeklyHours = {
+        "Mon - Sun": "Open 24 Hours"
+      };
+    } else {
+      const timeRange = w.hours;
+      const lowerName = w.name.toLowerCase();
+      
+      let sunHours = timeRange;
+      let satHours = timeRange;
+      let weekdayHours = timeRange;
+
+      if (lowerName.includes("metroplex") || lowerName.includes("southlake")) {
+        sunHours = "Closed";
+      } else if (lowerName.includes("tommy terrific") || lowerName.includes("longhorn") || lowerName.includes("dfw express") || lowerName.includes("carrollton")) {
+        sunHours = "8:00 AM - 6:00 PM";
+      } else if (lowerName.includes("tommy's express") || (lowerName.includes("tommy") && lowerName.includes("express")) || lowerName.includes("carnation") || lowerName.includes("clean getaway") || lowerName.includes("raceway") || lowerName.includes("oasis") || lowerName.includes("fort worth auto") || lowerName.includes("university") || lowerName.includes("richardson") || lowerName.includes("mansfield") || lowerName.includes("lewisville") || lowerName.includes("white rock") || lowerName.includes("vibe") || lowerName.includes("qwikwash") || lowerName.includes("legacy") || lowerName.includes("parkway") || lowerName.includes("clean streak")) {
+        sunHours = "9:00 AM - 6:00 PM";
+      } else if (lowerName.includes("grapevine") || lowerName.includes("arlington wave") || lowerName.includes("wave express")) {
+        sunHours = "9:00 AM - 7:00 PM";
+      } else if (lowerName.includes("landshark")) {
+        sunHours = "8:00 AM - 7:00 PM";
+      }
+
+      if (lowerName.includes("metroplex") || lowerName.includes("southlake") || lowerName.includes("university") || lowerName.includes("richardson") || lowerName.includes("parkway")) {
+        weekdayHours = "8:00 AM - 7:00 PM";
+        satHours = "8:00 AM - 7:00 PM";
+      } else if (lowerName.includes("vibe")) {
+        weekdayHours = "7:00 AM - 7:00 PM";
+        satHours = "7:00 AM - 7:00 PM";
+      } else if (lowerName.includes("carrollton")) {
+        weekdayHours = "7:30 AM - 7:30 PM";
+        satHours = "7:30 AM - 7:30 PM";
+      }
+
+      w.weeklyHours = {
+        "Mon - Fri": weekdayHours,
+        "Sat": satHours,
+        "Sun": sunHours
+      };
+    }
+  }
 }
 
 DEFAULT_WASHES.forEach(populateWashDetails);
@@ -1684,32 +1735,181 @@ DEFAULT_WASHES.forEach(populateWashDetails);
 class StateManager {
   constructor() {
     this.listeners = [];
+    this.washes = [];
+    this.construction = [];
+    this.offers = [];
     this.currentWeather = localStorage.getItem("washradar_weather") || "sunny";
-    this.loadState();
+    this.initDb();
   }
- 
-  loadState() {
+
+  async initDb() {
     try {
-      const currentVersion = localStorage.getItem("washradar_version");
-      if (currentVersion !== "dfw-v13") {
-        localStorage.removeItem("washradar_washes");
-        localStorage.removeItem("washradar_construction");
-        localStorage.removeItem("washradar_offers");
-        localStorage.setItem("washradar_version", "dfw-v13");
+      // Fetch initial data from Supabase
+      let { data: washesData, error: washesErr } = await supabase.from('washes').select('*');
+      let { data: constData, error: constErr } = await supabase.from('construction').select('*');
+      let { data: offersData, error: offersErr } = await supabase.from('offers').select('*');
+
+      if (washesErr || !washesData || washesData.length === 0) {
+        console.log("Database empty or error fetching. Seeding default data...");
+        await this.seedDatabase();
+        return;
       }
-      this.washes = JSON.parse(localStorage.getItem("washradar_washes")) || DEFAULT_WASHES;
+
+      this.washes = washesData.map(w => ({
+        id: w.id,
+        name: w.name,
+        lat: w.lat,
+        lng: w.lng,
+        status: w.status,
+        traffic: w.traffic,
+        waitTime: w.wait_time,
+        address: w.address,
+        phone: w.phone,
+        hours: w.hours,
+        trafficHistory: w.traffic_history || [],
+        closureReason: w.closure_reason,
+        serviceType: w.service_type,
+        summary: w.summary,
+        website: w.website,
+        equipment: w.equipment || [],
+        products: typeof w.products === 'string' ? JSON.parse(w.products) : (w.products || []),
+        plans: typeof w.plans === 'string' ? JSON.parse(w.plans) : (w.plans || [])
+      }));
       this.washes.forEach(populateWashDetails);
-      this.construction = JSON.parse(localStorage.getItem("washradar_construction")) || DEFAULT_CONSTRUCTION;
-      this.offers = JSON.parse(localStorage.getItem("washradar_offers")) || DEFAULT_OFFERS;
-      if (!localStorage.getItem("washradar_washes")) {
-        this.saveState();
-      }
+
+      this.construction = constData || [];
+      this.offers = (offersData || []).map(o => ({
+        id: o.id,
+        washId: o.wash_id,
+        title: o.title,
+        description: o.description,
+        type: o.type,
+        code: o.code,
+        expires: o.expires
+      }));
+
+      this.notify();
+
+      // Setup Realtime connection to sync database changes automatically
+      supabase
+        .channel('washradar-changes')
+        .on('postgres_changes', { event: '*', schema: 'public' }, async () => {
+          // Reload state on any database update
+          const { data: wD } = await supabase.from('washes').select('*');
+          const { data: cD } = await supabase.from('construction').select('*');
+          const { data: oD } = await supabase.from('offers').select('*');
+
+          if (wD) {
+            this.washes = wD.map(w => ({
+              id: w.id,
+              name: w.name,
+              lat: w.lat,
+              lng: w.lng,
+              status: w.status,
+              traffic: w.traffic,
+              waitTime: w.wait_time,
+              address: w.address,
+              phone: w.phone,
+              hours: w.hours,
+              trafficHistory: w.traffic_history || [],
+              closureReason: w.closure_reason,
+              serviceType: w.service_type,
+              summary: w.summary,
+              website: w.website,
+              equipment: w.equipment || [],
+              products: typeof w.products === 'string' ? JSON.parse(w.products) : (w.products || []),
+              plans: typeof w.plans === 'string' ? JSON.parse(w.plans) : (w.plans || [])
+            }));
+            this.washes.forEach(populateWashDetails);
+          }
+          if (cD) this.construction = cD;
+          if (oD) {
+            this.offers = oD.map(o => ({
+              id: o.id,
+              washId: o.wash_id,
+              title: o.title,
+              description: o.description,
+              type: o.type,
+              code: o.code,
+              expires: o.expires
+            }));
+          }
+          this.notify();
+        })
+        .subscribe();
+
     } catch (e) {
-      console.error("Failed to load local storage state", e);
-      this.washes = DEFAULT_WASHES;
-      this.construction = DEFAULT_CONSTRUCTION;
-      this.offers = DEFAULT_OFFERS;
+      console.error("Supabase initialization failed, falling back to localStorage", e);
+      this.loadLocalStorageFallback();
     }
+  }
+
+  async seedDatabase() {
+    try {
+      const seedWashes = DEFAULT_WASHES.map(w => ({
+        id: w.id,
+        name: w.name,
+        lat: w.lat,
+        lng: w.lng,
+        status: w.status,
+        traffic: w.traffic,
+        wait_time: w.waitTime,
+        address: w.address,
+        phone: w.phone,
+        hours: w.hours,
+        traffic_history: w.trafficHistory || [],
+        closure_reason: w.closureReason || '',
+        service_type: w.serviceType || 'express',
+        summary: w.summary,
+        website: w.website,
+        equipment: w.equipment || [],
+        products: w.products || [],
+        plans: w.plans || []
+      }));
+
+      const seedConst = DEFAULT_CONSTRUCTION.map(c => ({
+        id: c.id,
+        name: c.name,
+        lat: c.lat,
+        lng: c.lng,
+        address: c.address,
+        stage: c.stage,
+        completion: c.completion,
+        operator: c.operator,
+        details: c.details
+      }));
+
+      const seedOffers = DEFAULT_OFFERS.map(o => ({
+        id: o.id,
+        wash_id: o.washId,
+        title: o.title,
+        description: o.description,
+        type: o.type,
+        code: o.code,
+        expires: o.expires
+      }));
+
+      const { error: wErr } = await supabase.from('washes').insert(seedWashes);
+      if (wErr) console.error("Error seeding washes:", wErr);
+
+      const { error: cErr } = await supabase.from('construction').insert(seedConst);
+      if (cErr) console.error("Error seeding construction:", cErr);
+
+      const { error: oErr } = await supabase.from('offers').insert(seedOffers);
+      if (oErr) console.error("Error seeding offers:", oErr);
+
+      await this.initDb();
+    } catch (err) {
+      console.error("Seeding database failed:", err);
+    }
+  }
+
+  loadLocalStorageFallback() {
+    this.washes = JSON.parse(localStorage.getItem("washradar_washes")) || DEFAULT_WASHES;
+    this.washes.forEach(populateWashDetails);
+    this.construction = JSON.parse(localStorage.getItem("washradar_construction")) || DEFAULT_CONSTRUCTION;
+    this.offers = JSON.parse(localStorage.getItem("washradar_offers")) || DEFAULT_OFFERS;
+    this.notify();
   }
  
   saveState() {
@@ -1726,7 +1926,6 @@ class StateManager {
   // Pub/Sub
   subscribe(callback) {
     this.listeners.push(callback);
-    // Return unsubscribe function
     return () => {
       this.listeners = this.listeners.filter(cb => cb !== callback);
     };
@@ -1743,7 +1942,6 @@ class StateManager {
   }
  
   getState() {
-    // Apply dynamic weather overlays so simulator doesn't overwrite database state
     const processedWashes = this.washes.map(w => {
       const copy = JSON.parse(JSON.stringify(w));
       
@@ -1776,7 +1974,6 @@ class StateManager {
           copy.waitTime = 0;
           copy.closureReason = "❄️ Pipe freeze safety shutdown (sub-freezing temperatures)";
         } else if (copy.status === "open") {
-          // Open ones experience high load due to local closures
           copy.traffic = "high";
           copy.waitTime = copy.waitTime + 15;
         }
@@ -1793,20 +1990,35 @@ class StateManager {
   }
  
   // Actions
-  updateWashStatus(washId, status, traffic, waitTime, closureReason = "") {
+  async updateWashStatus(washId, status, traffic, waitTime, closureReason = "") {
     const washIndex = this.washes.findIndex(w => w.id === washId);
     if (washIndex !== -1) {
       this.washes[washIndex].status = status;
       this.washes[washIndex].traffic = traffic;
       this.washes[washIndex].waitTime = Number(waitTime);
       this.washes[washIndex].closureReason = closureReason;
-      this.saveState();
+      this.notify();
+
+      try {
+        await supabase
+          .from('washes')
+          .update({
+            status: status,
+            traffic: traffic,
+            wait_time: Number(waitTime),
+            closure_reason: closureReason
+          })
+          .eq('id', washId);
+      } catch (err) {
+        console.error("Supabase updateWashStatus failed, saving locally:", err);
+        this.saveState();
+      }
       return true;
     }
     return false;
   }
  
-  addConstructionProject(name, lat, lng, address, stage, completion, operator, details) {
+  async addConstructionProject(name, lat, lng, address, stage, completion, operator, details) {
     const newProject = {
       id: `const-${Date.now()}`,
       name,
@@ -1819,11 +2031,18 @@ class StateManager {
       details
     };
     this.construction.push(newProject);
-    this.saveState();
+    this.notify();
+
+    try {
+      await supabase.from('construction').insert(newProject);
+    } catch (err) {
+      console.error("Supabase addConstructionProject failed, saving locally:", err);
+      this.saveState();
+    }
     return newProject;
   }
  
-  addOffer(washId, title, description, type, code, expires) {
+  async addOffer(washId, title, description, type, code, expires) {
     const newOffer = {
       id: `offer-${Date.now()}`,
       washId,
@@ -1834,13 +2053,35 @@ class StateManager {
       expires
     };
     this.offers.push(newOffer);
-    this.saveState();
+    this.notify();
+
+    try {
+      await supabase.from('offers').insert({
+        id: newOffer.id,
+        wash_id: washId,
+        title,
+        description,
+        type,
+        code,
+        expires
+      });
+    } catch (err) {
+      console.error("Supabase addOffer failed, saving locally:", err);
+      this.saveState();
+    }
     return newOffer;
   }
  
-  deleteOffer(offerId) {
+  async deleteOffer(offerId) {
     this.offers = this.offers.filter(o => o.id !== offerId);
-    this.saveState();
+    this.notify();
+
+    try {
+      await supabase.from('offers').delete().eq('id', offerId);
+    } catch (err) {
+      console.error("Supabase deleteOffer failed, saving locally:", err);
+      this.saveState();
+    }
     return true;
   }
 }

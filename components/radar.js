@@ -55,8 +55,15 @@ class ConstructionRadarComponent {
     if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
 
     if (form) {
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : "";
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "Geocoding Address...";
+        }
 
         const name = document.getElementById("build-name").value;
         const address = document.getElementById("build-address").value;
@@ -65,11 +72,32 @@ class ConstructionRadarComponent {
         const completion = document.getElementById("build-completion").value;
         const details = document.getElementById("build-details").value;
 
-        // Generate a semi-random latitude/longitude in the Austin area to place on the map
-        const lat = (30.22 + Math.random() * 0.08).toFixed(4);
-        const lng = (-97.77 - Math.random() * 0.08).toFixed(4);
+        let lat, lng;
+
+        try {
+          // Geocode using OpenStreetMap's Nominatim (free, no API key needed)
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`);
+          const data = await response.json();
+          if (data && data.length > 0) {
+            lat = parseFloat(data[0].lat);
+            lng = parseFloat(data[0].lon);
+          } else {
+            // Fallback inside Dallas Metroplex area (near other washes)
+            lat = 33.04 + (Math.random() - 0.5) * 0.2;
+            lng = -97.18 + (Math.random() - 0.5) * 0.2;
+          }
+        } catch (err) {
+          console.error("Geocoding failed, using DFW fallback coordinates", err);
+          lat = 33.04 + (Math.random() - 0.5) * 0.2;
+          lng = -97.18 + (Math.random() - 0.5) * 0.2;
+        }
 
         state.addConstructionProject(name, lat, lng, address, stage, completion, operator, details);
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
 
         closeModal();
       });

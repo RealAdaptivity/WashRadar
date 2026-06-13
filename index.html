@@ -206,10 +206,16 @@
               </div>
             </div>
             
-            <div style="margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+            <div style="margin-bottom: 20px; display: grid; grid-template-columns: 2fr 1.2fr 1.2fr; gap: 24px;">
               <div>
                 <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 6px;">About this Wash</h3>
                 <p id="details-wash-summary" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">Summary details go here...</p>
+              </div>
+              <div style="border-left: 1px solid var(--border-color); padding-left: 20px;">
+                <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px;">Weekly Schedule</h3>
+                <div id="details-wash-weekly-hours" style="font-size: 0.82rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px;">
+                  <!-- Dynamically populated via dashboard.js -->
+                </div>
               </div>
               <div style="border-left: 1px solid var(--border-color); padding-left: 20px;">
                 <h3 style="font-family: var(--font-display); font-size: 0.95rem; color: var(--text-primary); margin-bottom: 8px;">History & Ownership</h3>

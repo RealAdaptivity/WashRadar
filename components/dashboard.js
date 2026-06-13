@@ -59,7 +59,8 @@ class DashboardComponent {
       sidebarList.innerHTML = "";
       const filteredWashes = washes.filter(w => {
         if (this.selectedServiceType === "all") return true;
-        return w.serviceType === this.selectedServiceType;
+        const sType = w.serviceType || "express";
+        return sType === this.selectedServiceType;
       });
 
       if (filteredWashes.length === 0) {
@@ -152,6 +153,27 @@ class DashboardComponent {
         if (elAddress) elAddress.textContent = selectedWash.address;
         if (elHours) elHours.textContent = `🕒 ${selectedWash.hours}`;
         if (elPhone) elPhone.textContent = `📞 ${selectedWash.phone}`;
+        
+        const elWeeklyHours = document.getElementById("details-wash-weekly-hours");
+        if (elWeeklyHours) {
+          elWeeklyHours.innerHTML = "";
+          if (selectedWash.weeklyHours) {
+            Object.entries(selectedWash.weeklyHours).forEach(([days, time]) => {
+              const p = document.createElement("p");
+              p.style.margin = "2px 0";
+              p.style.fontSize = "0.82rem";
+              p.style.display = "flex";
+              p.style.justifyContent = "space-between";
+              p.innerHTML = `
+                <strong style="color: var(--text-secondary); font-weight: 500;">${days}:</strong>
+                <span style="color: var(--text-primary); font-weight: 500;">${time}</span>
+              `;
+              elWeeklyHours.appendChild(p);
+            });
+          } else {
+            elWeeklyHours.innerHTML = `<p style="color: var(--text-muted);">No schedule details available.</p>`;
+          }
+        }
         
         if (selectedWash.website) {
           const displayUrl = selectedWash.website.replace(/^(https?:\/\/)?(www\.)?/, "");

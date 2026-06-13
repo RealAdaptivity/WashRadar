@@ -20,6 +20,34 @@ class WeatherComponent {
 
     const { washes, currentWeather } = state.getState();
 
+    // Generate weekly forecast dynamically starting from today
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const todayIndex = new Date().getDay();
+    const forecast = Array.from({ length: 7 }, (_, i) => {
+      const dayName = i === 0 ? "Today" : daysOfWeek[(todayIndex + i) % 7];
+      let weather = "sunny";
+      if (i === 0) {
+        weather = currentWeather;
+      } else {
+        const r = (todayIndex + i) % 4;
+        if (r === 1) weather = "rainy";
+        else if (r === 2) weather = "stormy";
+        else if (r === 3) weather = "freezing";
+      }
+      return { day: dayName, weather };
+    });
+
+    // Estimate weekly volume for each wash based on their traffic load history
+    const washVolumes = washes.map(w => {
+      const base = w.trafficHistory ? w.trafficHistory.reduce((sum, val) => sum + val, 0) : 50;
+      const scale = w.status === "open" ? 1.0 : 0.1;
+      const vol = Math.round(base * 10 * scale);
+      return {
+        name: w.name,
+        volume: vol > 0 ? vol.toLocaleString() : "-"
+      };
+    });
+
     // Calculate metrics
     const totalWashes = washes.length;
     const closedWashes = washes.filter(w => w.status === "closed" || w.status === "maintenance").length;

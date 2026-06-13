@@ -17,6 +17,9 @@ class MapComponent {
     this.showOpen = true;
     this.showClosed = true;
     this.showConstruction = true;
+    this.showFullService = true;
+    this.showExpress = true;
+    this.showSelfServe = true;
   }
 
   init() {
@@ -58,6 +61,9 @@ class MapComponent {
     const optOpen = document.getElementById("filter-open");
     const optClosed = document.getElementById("filter-closed");
     const optConst = document.getElementById("filter-construction");
+    const optTypeFull = document.getElementById("filter-type-full");
+    const optTypeExpress = document.getElementById("filter-type-express");
+    const optTypeSelf = document.getElementById("filter-type-self");
 
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
@@ -83,6 +89,27 @@ class MapComponent {
     if (optConst) {
       optConst.addEventListener("change", (e) => {
         this.showConstruction = e.target.checked;
+        this.render();
+      });
+    }
+
+    if (optTypeFull) {
+      optTypeFull.addEventListener("change", (e) => {
+        this.showFullService = e.target.checked;
+        this.render();
+      });
+    }
+
+    if (optTypeExpress) {
+      optTypeExpress.addEventListener("change", (e) => {
+        this.showExpress = e.target.checked;
+        this.render();
+      });
+    }
+
+    if (optTypeSelf) {
+      optTypeSelf.addEventListener("change", (e) => {
+        this.showSelfServe = e.target.checked;
         this.render();
       });
     }
@@ -134,7 +161,12 @@ class MapComponent {
       
       const matchesStatus = (isOpen && this.showOpen) || (isClosedOrMaint && this.showClosed);
       
-      return matchesSearch && matchesStatus;
+      const sType = w.serviceType || "express";
+      const matchesType = (sType === "full-service" && this.showFullService) ||
+                          (sType === "express" && this.showExpress) ||
+                          (sType === "self-serve" && this.showSelfServe);
+      
+      return matchesSearch && matchesStatus && matchesType;
     });
 
     const filteredConstruction = construction.filter(c => {
