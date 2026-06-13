@@ -12,6 +12,38 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const DEFAULT_WASHES = [
   {
+    id: "wash-65",
+    name: "WhiteWater Express Car Wash",
+    lat: 33.1118,
+    lng: -97.1825,
+    status: "open",
+    traffic: "moderate",
+    waitTime: 10,
+    address: "8763 US-377, Argyle, TX 76226",
+    phone: "(940) 555-0105",
+    hours: "Mon-Sat: 7:30AM-7:30PM, Sun: 8AM-7PM",
+    trafficHistory: [0, 0, 0, 0, 0, 0, 10, 20, 35, 45, 55, 65, 75, 70, 65, 60, 50, 40, 25, 10, 0, 0, 0, 0],
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 320
+  },
+  {
+    id: "wash-66",
+    name: "Shell / Sonic Car Wash",
+    lat: 33.1194,
+    lng: -97.1842,
+    status: "open",
+    traffic: "low",
+    waitTime: 5,
+    address: "US-377, Argyle, TX 76226",
+    phone: "(940) 555-0106",
+    hours: "Open 24 Hours",
+    trafficHistory: [5, 5, 5, 5, 10, 15, 20, 25, 30, 35, 30, 25, 20, 25, 30, 35, 30, 25, 20, 15, 10, 5, 5, 5],
+    closureReason: "",
+    rating: 3.8,
+    reviewCount: 150
+  },
+  {
     id: "wash-1",
     name: "Tommy Terrific's Car Wash",
     lat: 33.01392,
@@ -1294,6 +1326,28 @@ const DEFAULT_WASHES = [
 ];
 
 const DEFAULT_CONSTRUCTION = [
+  {
+    id: "const-12",
+    name: "Fast Lane Car Wash",
+    lat: 33.0921,
+    lng: -97.1685,
+    address: "FM 407 & Avalon Blvd, Argyle, TX 76226",
+    stage: "equipment",
+    completion: "Summer 2026",
+    operator: "Fast Lane",
+    details: "New premium express tunnel wash in South Argyle joining the local corridor."
+  },
+  {
+    id: "const-13",
+    name: "H-E-B Auto Wash",
+    lat: 33.1534,
+    lng: -97.1901,
+    address: "Robson Ranch Rd, Argyle, TX 76226",
+    stage: "permitting",
+    completion: "Fall 2026",
+    operator: "H-E-B Corporate",
+    details: "Automated car wash being built alongside the highly anticipated new H-E-B grocery store."
+  },
   {
     id: "const-1",
     name: "WhiteWater Express Car Wash",
@@ -2769,7 +2823,10 @@ class StateManager {
     return newProject;
   }
 
-  async addOffer(washId, washName, title, description, type, code, expiry, details) {
+  async addOffer(washId, title, description, type, code, expires) {
+    const wash = this.washes.find(w => w.id === washId);
+    const washName = wash ? wash.name : "Unknown Wash";
+
     const newOffer = {
       id: "offer-" + Date.now(),
       washId,
@@ -2778,8 +2835,7 @@ class StateManager {
       description,
       type,
       code,
-      expiry,
-      details,
+      expires,
       postedAt: new Date().toISOString()
     };
 
@@ -2793,6 +2849,7 @@ class StateManager {
       await supabase.from('offers').insert({
         id: newOffer.id,
         wash_id: washId,
+        title,
         description,
         type,
         code,
