@@ -33,6 +33,7 @@ class AppController {
     this.setupOperatorForm();
     this.setupNotifications();
     this.setupBilling();
+    this.setupAuth();
     
     // Initialize components
     this.dashboardComponent.init();
@@ -50,11 +51,113 @@ class AppController {
       this.updateOperatorBanner();
       this.renderNotifications();
       this.updateBillingUI();
+      this.updateAuthUI();
     });
     
     this.updateOperatorBanner();
     this.renderNotifications();
     this.updateBillingUI();
+    this.updateAuthUI();
+  }
+
+  setupAuth() {
+    const btnOpenAuth = document.getElementById("btn-open-auth");
+    const modalAuth = document.getElementById("modal-auth");
+    const closeAuthBtn = document.getElementById("close-auth-modal");
+    const formAuth = document.getElementById("form-auth");
+    const btnSignup = document.getElementById("btn-signup");
+    const btnSignin = document.getElementById("btn-signin");
+    const authError = document.getElementById("auth-error");
+    const btnLogout = document.getElementById("btn-logout");
+
+    if (btnOpenAuth) {
+      btnOpenAuth.addEventListener("click", () => {
+        modalAuth.classList.add("active");
+      });
+    }
+
+    if (closeAuthBtn) {
+      closeAuthBtn.addEventListener("click", () => {
+        modalAuth.classList.remove("active");
+        if (authError) authError.style.display = "none";
+      });
+    }
+
+    if (btnSignup && formAuth) {
+      btnSignup.addEventListener("click", async (e) => {
+        e.preventDefault();
+        if (!formAuth.checkValidity()) {
+          formAuth.reportValidity();
+          return;
+        }
+        const email = document.getElementById("auth-email").value;
+        const password = document.getElementById("auth-password").value;
+        
+        try {
+          await state.signUp(email, password);
+          modalAuth.classList.remove("active");
+          state.addNotification("Welcome", "Your account has been created.");
+          if (authError) authError.style.display = "none";
+        } catch(err) {
+          if (authError) {
+            authError.textContent = err.message;
+            authError.style.display = "block";
+          }
+        }
+      });
+    }
+
+    if (btnSignin && formAuth) {
+      btnSignin.addEventListener("click", async (e) => {
+        e.preventDefault();
+        if (!formAuth.checkValidity()) {
+          formAuth.reportValidity();
+          return;
+        }
+        const email = document.getElementById("auth-email").value;
+        const password = document.getElementById("auth-password").value;
+        
+        try {
+          await state.signIn(email, password);
+          modalAuth.classList.remove("active");
+          state.addNotification("Welcome Back", "You have successfully signed in.");
+          if (authError) authError.style.display = "none";
+        } catch(err) {
+          if (authError) {
+            authError.textContent = err.message;
+            authError.style.display = "block";
+          }
+        }
+      });
+    }
+
+    if (btnLogout) {
+      btnLogout.addEventListener("click", async () => {
+        try {
+          await state.signOut();
+          state.addNotification("Signed Out", "You have been signed out.");
+        } catch(err) {
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  updateAuthUI() {
+    const { currentUser } = state.getState();
+    const btnOpenAuth = document.getElementById("btn-open-auth");
+    const userProfile = document.getElementById("user-profile");
+    const userEmail = document.getElementById("user-email");
+
+    if (currentUser) {
+      if (btnOpenAuth) btnOpenAuth.style.display = "none";
+      if (userProfile) userProfile.style.display = "flex";
+      if (userEmail) userEmail.textContent = currentUser.email;
+    } else {
+      if (btnOpenAuth) btnOpenAuth.style.display = "block";
+      if (userProfile) userProfile.style.display = "none";
+      if (userEmail) userEmail.textContent = "";
+    }
   }
 
   setupBilling() {
@@ -78,6 +181,15 @@ class AppController {
     planBtns.forEach(btn => {
       btn.addEventListener("click", (e) => {
         const tier = e.target.dataset.tier;
+        const { currentUser } = state.getState();
+        
+        if (!currentUser && tier !== 'basic') {
+          document.getElementById("modal-billing").classList.remove("active");
+          document.getElementById("modal-auth").classList.add("active");
+          state.addNotification("Account Required", "Please sign in or create an account to upgrade your plan.");
+          return;
+        }
+
         state.updateSubscriptionTier(tier);
         modalBilling.classList.remove("active");
       });
@@ -111,22 +223,26 @@ class AppController {
     if (constructionTab) {
       if (subscriptionTier === 'basic') {
         constructionTab.style.opacity = "0.4";
-        constructionTab.innerHTML += `<span style="font-size:0.6rem;background:var(--color-primary);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">PRO</span>`;
+        if (!constructionTab.querySelector('.pro-badge')) {
+          constructionTab.innerHTML += `<span class="pro-badge" style="font-size:0.6rem;background:var(--color-primary);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">PRO</span>`;
+        }
       } else {
         constructionTab.style.opacity = "1";
-        const badge = constructionTab.querySelector('span:last-child');
-        if (badge && badge.textContent === 'PRO') badge.remove();
+        const badge = constructionTab.querySelector('.pro-badge');
+        if (badge) badge.remove();
       }
     }
     
     if (analyticsTab) {
       if (subscriptionTier !== 'enterprise') {
         analyticsTab.style.opacity = "0.4";
-        analyticsTab.innerHTML += `<span style="font-size:0.6rem;background:var(--color-cyan);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">ENT</span>`;
+        if (!analyticsTab.querySelector('.ent-badge')) {
+          analyticsTab.innerHTML += `<span class="ent-badge" style="font-size:0.6rem;background:var(--color-cyan);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">ENT</span>`;
+        }
       } else {
         analyticsTab.style.opacity = "1";
-        const badge = analyticsTab.querySelector('span:last-child');
-        if (badge && badge.textContent === 'ENT') badge.remove();
+        const badge = analyticsTab.querySelector('.ent-badge');
+        if (badge) badge.remove();
       }
     }
   }

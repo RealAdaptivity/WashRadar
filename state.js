@@ -1826,8 +1826,10 @@ class StateManager {
     this.offers = [];
     this.currentWeather = localStorage.getItem("washradar_weather") || "sunny";
     this.subscriptionTier = "basic"; // 'basic', 'pro', 'enterprise'
+    this.currentUser = null;
     
     this.initDb();
+    this.initAuth();
   }
 
   // --- Notification Methods ---
@@ -1868,6 +1870,59 @@ class StateManager {
   }
 
   // --- End Notification Methods ---
+
+  // --- Auth Methods ---
+  async initAuth() {
+    const { data: { session } } = await supabase.auth.getSession();
+    this.handleSession(session);
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      this.handleSession(session);
+    });
+  }
+
+  handleSession(session) {
+    if (session && session.user) {
+      this.currentUser = session.user;
+      if (this.currentUser.user_metadata && this.currentUser.user_metadata.subscription_tier) {
+        this.subscriptionTier = this.currentUser.user_metadata.subscription_tier;
+      }
+    } else {
+      this.currentUser = null;
+      this.subscriptionTier = "basic";
+    }
+    this.notifySubscribers();
+  }
+
+  async signUp(email, password) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { subscription_tier: 'basic' }
+      }
+    });
+    if (error) throw error;
+    if (data.session) this.handleSession(data.session);
+    return data;
+  }
+
+  async signIn(email, password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    if (data.session) this.handleSession(data.session);
+    return data;
+  }
+
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    this.handleSession(null);
+  }
+  // --- End Auth Methods ---
 
   async initDb() {
     try {
@@ -2118,13 +2173,24 @@ class StateManager {
       offers: this.offers,
       notifications: this.notifications,
       currentWeather: this.currentWeather,
-      subscriptionTier: this.subscriptionTier
+      subscriptionTier: this.subscriptionTier,
+      currentUser: this.currentUser
     };
   }
 
   // Actions
-  updateSubscriptionTier(tier) {
+  async updateSubscriptionTier(tier) {
     this.subscriptionTier = tier;
+    
+    // Persist to Supabase Auth if logged in
+    if (this.currentUser) {
+      const { error } = await supabase.auth.updateUser({
+        data: { subscription_tier: tier }
+      });
+      if (error) {
+        console.error("Failed to update user plan:", error);
+      }
+    }
     
     if (tier === 'pro') {
       this.addNotification("Upgrade Successful", "You are now on the Pro Plan. Real-time alerts and Construction Radar are unlocked!");

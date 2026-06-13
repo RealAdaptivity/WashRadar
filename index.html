@@ -139,6 +139,14 @@
         </div>
         <div class="header-actions">
           
+          <div id="auth-container" style="display: flex; align-items: center; gap: 12px; margin-right: 16px;">
+            <button class="btn-primary" id="btn-open-auth">Login / Sign Up</button>
+            <div id="user-profile" style="display: none; align-items: center; gap: 8px;">
+              <span id="user-email" style="font-size: 0.85rem; color: var(--text-primary); font-weight: 500;"></span>
+              <button class="btn-secondary" id="btn-logout" style="padding: 6px 12px; font-size: 0.8rem;">Logout</button>
+            </div>
+          </div>
+
           <!-- Notifications Bell -->
           <div class="notification-wrapper" id="notification-wrapper">
             <button class="notification-btn" id="notification-btn">
@@ -789,6 +797,35 @@
           <button class="btn-cyan btn-plan-select" data-tier="enterprise" style="width: 100%; border: none;">Upgrade to Enterprise</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Authentication Modal -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal-content glass" style="max-width: 400px; width: 90%;">
+      <button class="modal-close-btn" id="close-auth-modal">✕</button>
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h2 class="modal-title" style="font-size: 1.5rem; margin-bottom: 8px;">Account Access</h2>
+        <p class="modal-subtitle">Sign in or create an account to save your plans.</p>
+      </div>
+
+      <form id="form-auth" style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="form-group">
+          <label for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" placeholder="operator@washradar.com" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" placeholder="••••••••" required style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
+        </div>
+        
+        <div id="auth-error" style="color: var(--color-red); font-size: 0.8rem; display: none; text-align: center;"></div>
+        
+        <div class="form-actions" style="display: flex; gap: 12px; margin-top: 8px;">
+          <button type="button" class="btn-secondary" id="btn-signup" style="flex: 1;">Sign Up</button>
+          <button type="submit" class="btn-primary" id="btn-signin" style="flex: 1;">Sign In</button>
+        </div>
+      </form>
     </div>
   </div>
 

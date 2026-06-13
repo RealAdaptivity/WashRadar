@@ -328,11 +328,8 @@ class MapComponent {
                   const items = document.querySelectorAll(".wash-compact-item");
                   items.forEach(it => {
                     if (it.dataset.id === w.id) {
-                      it.style.borderColor = "var(--color-primary)";
+                      it.click(); // Triggers the dashboard logic to update details
                       it.scrollIntoView({ behavior: "smooth", block: "center" });
-                      setTimeout(() => {
-                        it.style.borderColor = "var(--border-color)";
-                      }, 2000);
                     }
                   });
                 }, 100);
