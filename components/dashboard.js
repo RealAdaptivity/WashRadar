@@ -273,6 +273,39 @@ class DashboardComponent {
     }
   }
 
+  /**
+   * Parse a hours string like "7:00 AM - 8:00 PM" into { open, close } in 24h integers.
+   * Returns { open: 0, close: 24 } for 24-hour or unparseable strings.
+   */
+  parseOperatingHours(hoursStr) {
+    if (!hoursStr || /24\s*hours?/i.test(hoursStr)) return { open: 0, close: 24 };
+    const m = hoursStr.match(
+      /(\d+)(?::(\d+))?\s*(AM|PM)\s*[-–]\s*(\d+)(?::(\d+))?\s*(AM|PM)/i
+    );
+    if (!m) return { open: 0, close: 24 };
+    let oh = parseInt(m[1]);
+    const op = m[3].toUpperCase();
+    let ch = parseInt(m[4]);
+    const cp = m[6].toUpperCase();
+    if (op === "PM" && oh !== 12) oh += 12;
+    if (op === "AM" && oh === 12) oh = 0;
+    if (cp === "PM" && ch !== 12) ch += 12;
+    if (cp === "AM" && ch === 12) ch = 0;
+    return { open: oh, close: ch };
+  }
+
+  /**
+   * Return a 24-element copy of trafficHistory with values outside operating
+   * hours forced to 0, so the chart never shows traffic when the wash is closed.
+   */
+  getMaskedTraffic(wash) {
+    const raw = Array.from({ length: 24 }, (_, i) =>
+      (wash.trafficHistory && wash.trafficHistory[i] != null) ? wash.trafficHistory[i] : 0
+    );
+    const { open, close } = this.parseOperatingHours(wash.hours);
+    return raw.map((v, i) => (i >= open && i < close) ? v : 0);
+  }
+
   renderChart(washes) {
     const canvas = document.getElementById("traffic-analytics-chart");
     if (!canvas) return;
@@ -280,10 +313,16 @@ class DashboardComponent {
     const selectedWash = washes.find(w => w.id === this.selectedWashId) || washes[0];
     if (!selectedWash) return;
 
-    // Update chart title if we have the DOM element
+    // Update chart title
     const chartTitle = document.getElementById("analytics-chart-title");
     if (chartTitle) {
       chartTitle.textContent = `24-Hour Traffic Load: ${selectedWash.name}`;
+    }
+
+    // Wait until Chart.js is loaded
+    if (typeof Chart === "undefined") {
+      setTimeout(() => this.renderChart(washes), 200);
+      return;
     }
 
     const labels = Array.from({ length: 24 }, (_, i) => {
@@ -292,107 +331,122 @@ class DashboardComponent {
       return `${hour} ${ampm}`;
     });
 
-    const dataValues = selectedWash.trafficHistory;
-
-    // Wait until Chart.js is loaded
-    if (typeof Chart === "undefined") {
-      setTimeout(() => this.renderChart(washes), 200);
-      return;
-    }
+    // Mask traffic to 0 outside operating hours
+    const dataValues = this.getMaskedTraffic(selectedWash);
+    const { open: openHour, close: closeHour } = this.parseOperatingHours(selectedWash.hours);
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Always destroy & recreate so the closed-hours shading plugin
+    // has fresh open/close values baked in for the selected wash.
     if (this.chart) {
-      // If chart already exists, update data & options
-      this.chart.data.datasets[0].label = `${selectedWash.name} Capacity %`;
-      this.chart.data.datasets[0].data = dataValues;
-      this.chart.update();
-    } else {
-      // Create a brand new chart
-      this.chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: `${selectedWash.name} Capacity %`,
-              data: dataValues,
-              borderColor: "#6366f1",
-              borderWidth: 3,
-              backgroundColor: (context) => {
-                const chart = context.chart;
-                const { ctx, chartArea } = chart;
-                if (!chartArea) return null;
-                const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                gradient.addColorStop(0, "rgba(99, 102, 241, 0.4)");
-                gradient.addColorStop(1, "rgba(99, 102, 241, 0.0)");
-                return gradient;
-              },
-              fill: true,
-              tension: 0.4,
-              pointBackgroundColor: "#6366f1",
-              pointBorderColor: "#fff",
-              pointHoverRadius: 7,
-              pointHoverBackgroundColor: "#6366f1",
-              pointHoverBorderColor: "#fff"
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              backgroundColor: "rgba(15, 22, 38, 0.9)",
-              titleFont: { family: "Space Grotesk", size: 12 },
-              bodyFont: { family: "Outfit", size: 12 },
-              borderColor: "rgba(255, 255, 255, 0.08)",
-              borderWidth: 1,
-              padding: 12,
-              cornerRadius: 8,
-              displayColors: false,
-              callbacks: {
-                label: (context) => {
-                  let percent = context.parsed.y;
-                  let load = "Low Traffic";
-                  if (percent > 75) load = "High Traffic";
-                  else if (percent > 40) load = "Moderate Traffic";
-                  return `Occupancy: ${percent}% (${load})`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: {
-                color: "rgba(255, 255, 255, 0.03)"
-              },
-              ticks: {
-                color: "#94a3b8",
-                font: { family: "Outfit", size: 10 },
-                maxTicksLimit: 8
-              }
-            },
-            y: {
-              grid: {
-                color: "rgba(255, 255, 255, 0.03)"
-              },
-              ticks: {
-                color: "#94a3b8",
-                font: { family: "Outfit", size: 10 },
-                callback: (value) => `${value}%`
-              },
-              min: 0,
-              max: 100
-            }
+      this.chart.destroy();
+      this.chart = null;
+    }
+
+    // Custom plugin: shade columns outside operating hours
+    const closedShadingPlugin = {
+      id: "closedHoursShading",
+      beforeDatasetsDraw(chart) {
+        const { ctx: c, chartArea, scales } = chart;
+        if (!chartArea || !scales.x) return;
+        c.save();
+        c.fillStyle = "rgba(0, 0, 0, 0.22)";
+        const xScale = scales.x;
+        const totalPoints = 24;
+        const halfStep = (xScale.getPixelForValue(1) - xScale.getPixelForValue(0)) / 2;
+        for (let i = 0; i < totalPoints; i++) {
+          if (i < openHour || i >= closeHour) {
+            const px = xScale.getPixelForValue(i);
+            c.fillRect(px - halfStep, chartArea.top, halfStep * 2, chartArea.bottom - chartArea.top);
           }
         }
-      });
-    }
+        c.restore();
+      }
+    };
+
+    this.chart = new Chart(ctx, {
+      type: "line",
+      plugins: [closedShadingPlugin],
+      data: {
+        labels,
+        datasets: [
+          {
+            label: `${selectedWash.name} Capacity %`,
+            data: dataValues,
+            borderColor: "#6366f1",
+            borderWidth: 3,
+            backgroundColor: (context) => {
+              const chart = context.chart;
+              const { ctx: c2, chartArea } = chart;
+              if (!chartArea) return null;
+              const gradient = c2.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+              gradient.addColorStop(0, "rgba(99, 102, 241, 0.4)");
+              gradient.addColorStop(1, "rgba(99, 102, 241, 0.0)");
+              return gradient;
+            },
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: "#6366f1",
+            pointBorderColor: "#fff",
+            pointHoverRadius: 7,
+            pointHoverBackgroundColor: "#6366f1",
+            pointHoverBorderColor: "#fff"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(15, 22, 38, 0.9)",
+            titleFont: { family: "Space Grotesk", size: 12 },
+            bodyFont: { family: "Outfit", size: 12 },
+            borderColor: "rgba(255, 255, 255, 0.08)",
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8,
+            displayColors: false,
+            callbacks: {
+              label: (context) => {
+                const percent = context.parsed.y;
+                if (percent === 0) {
+                  const hour = context.dataIndex;
+                  if (hour < openHour || hour >= closeHour) return "Closed (outside operating hours)";
+                }
+                let load = "Low Traffic";
+                if (percent > 75) load = "High Traffic";
+                else if (percent > 40) load = "Moderate Traffic";
+                return `Occupancy: ${percent}% (${load})`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: "rgba(255, 255, 255, 0.03)" },
+            ticks: {
+              color: "#94a3b8",
+              font: { family: "Outfit", size: 10 },
+              maxTicksLimit: 8
+            }
+          },
+          y: {
+            grid: { color: "rgba(255, 255, 255, 0.03)" },
+            ticks: {
+              color: "#94a3b8",
+              font: { family: "Outfit", size: 10 },
+              callback: (value) => `${value}%`
+            },
+            min: 0,
+            max: 100
+          }
+        }
+      }
+    });
   }
 }
 

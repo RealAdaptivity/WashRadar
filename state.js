@@ -1090,7 +1090,7 @@ const DEFAULT_OFFERS = [
 
 function populateWashDetails(w) {
   const name = w.name.toLowerCase();
-  
+
   // 1. Deterministic Google Reviews Generator
   let hash = 0;
   for (let i = 0; i < w.id.length; i++) {
@@ -1693,7 +1693,7 @@ function populateWashDetails(w) {
     } else {
       const timeRange = w.hours;
       const lowerName = w.name.toLowerCase();
-      
+
       let sunHours = timeRange;
       let satHours = timeRange;
       let weekdayHours = timeRange;
@@ -1911,7 +1911,7 @@ class StateManager {
     this.offers = JSON.parse(localStorage.getItem("washradar_offers")) || DEFAULT_OFFERS;
     this.notify();
   }
- 
+
   saveState() {
     try {
       localStorage.setItem("washradar_washes", JSON.stringify(this.washes));
@@ -1922,7 +1922,7 @@ class StateManager {
       console.error("Failed to save state to local storage", e);
     }
   }
- 
+
   // Pub/Sub
   subscribe(callback) {
     this.listeners.push(callback);
@@ -1930,21 +1930,21 @@ class StateManager {
       this.listeners = this.listeners.filter(cb => cb !== callback);
     };
   }
- 
+
   notify() {
     this.listeners.forEach(callback => callback(this.getState()));
   }
- 
+
   setWeather(weather) {
     this.currentWeather = weather;
     localStorage.setItem("washradar_weather", weather);
     this.notify();
   }
- 
+
   getState() {
     const processedWashes = this.washes.map(w => {
       const copy = JSON.parse(JSON.stringify(w));
-      
+
       if (this.currentWeather === "rainy") {
         if (copy.status === "open") {
           copy.traffic = "low";
@@ -1980,7 +1980,7 @@ class StateManager {
       }
       return copy;
     });
- 
+
     return {
       washes: processedWashes,
       construction: this.construction,
@@ -1988,7 +1988,7 @@ class StateManager {
       currentWeather: this.currentWeather
     };
   }
- 
+
   // Actions
   async updateWashStatus(washId, status, traffic, waitTime, closureReason = "") {
     const washIndex = this.washes.findIndex(w => w.id === washId);
@@ -2017,7 +2017,7 @@ class StateManager {
     }
     return false;
   }
- 
+
   async addConstructionProject(name, lat, lng, address, stage, completion, operator, details) {
     const newProject = {
       id: `const-${Date.now()}`,
@@ -2041,7 +2041,7 @@ class StateManager {
     }
     return newProject;
   }
- 
+
   async addOffer(washId, title, description, type, code, expires) {
     const newOffer = {
       id: `offer-${Date.now()}`,
@@ -2071,7 +2071,7 @@ class StateManager {
     }
     return newOffer;
   }
- 
+
   async deleteOffer(offerId) {
     this.offers = this.offers.filter(o => o.id !== offerId);
     this.notify();
