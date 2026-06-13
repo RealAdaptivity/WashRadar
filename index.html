@@ -107,11 +107,23 @@
             <span>Weather & Ops</span>
           </a>
         </li>
+        <li class="menu-item">
+          <a class="menu-link" data-tab="analytics">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            <span>Analytics & Reports</span>
+          </a>
+        </li>
       </ul>
 
       <div class="sidebar-footer">
-        <button class="operator-toggle-btn" id="operator-toggle">
+        <button class="operator-toggle-btn" id="operator-toggle" style="margin-bottom: 8px;">
           ⚙️ Operator Portal
+        </button>
+        <button class="operator-toggle-btn" id="btn-billing" style="background: rgba(16, 185, 129, 0.1); color: var(--color-green); border-color: rgba(16, 185, 129, 0.2);">
+          💳 Billing & Plans
         </button>
       </div>
     </aside>
@@ -126,6 +138,33 @@
           <p id="view-subtitle">Competitor intelligence & promotional insights</p>
         </div>
         <div class="header-actions">
+          
+          <!-- Notifications Bell -->
+          <div class="notification-wrapper" id="notification-wrapper">
+            <button class="notification-btn" id="notification-btn">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                </path>
+              </svg>
+              <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+            </button>
+            
+            <!-- Dropdown Panel -->
+            <div class="notification-dropdown glass" id="notification-dropdown" style="display: none;">
+              <div class="notification-header">
+                <h3>Alerts & Updates</h3>
+                <button id="mark-all-read" class="btn-text" style="font-size: 0.8rem;">Mark all read</button>
+              </div>
+              <div class="notification-list" id="notification-list">
+                <!-- Notifications injected here -->
+                <div class="notification-empty" style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+                  No new alerts.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="status-indicator-bar">
             <span class="status-dot"></span>
             <span>Live System Stream</span>
@@ -448,6 +487,62 @@
         <section id="weather-section" class="view-section">
           <!-- Dynamically populated via weather.js -->
         </section>
+
+        <!-- 6. ANALYTICS & REPORTS VIEW -->
+        <section id="analytics-section" class="view-section">
+          <div class="analytics-view-container">
+            <div class="radar-header-actions" style="margin-bottom: 24px;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <h2 style="font-family: var(--font-display);">Historical Trends & Reports</h2>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Analyze competitor performance over time</p>
+              </div>
+              <button id="btn-export-csv" class="btn-cyan">
+                <span>📥 Export Data (CSV)</span>
+              </button>
+            </div>
+
+            <div class="dashboard-grid">
+              <div class="metric-card glass">
+                <div class="metric-header">
+                  <span>Total Wash Capacity</span>
+                </div>
+                <div class="metric-value" id="analytics-total-capacity">1,240</div>
+                <div class="metric-footer">Cars per hour in region</div>
+              </div>
+              <div class="metric-card glass">
+                <div class="metric-header">
+                  <span>Avg Competitor Wait</span>
+                </div>
+                <div class="metric-value" id="analytics-avg-wait">14m</div>
+                <div class="metric-footer">Down 2m from last week</div>
+              </div>
+              <div class="metric-card glass">
+                <div class="metric-header">
+                  <span>Active Promotions</span>
+                </div>
+                <div class="metric-value" id="analytics-total-promos">8</div>
+                <div class="metric-footer">Currently running in region</div>
+              </div>
+              <div class="metric-card glass">
+                <div class="metric-header">
+                  <span>New Construction</span>
+                </div>
+                <div class="metric-value" id="analytics-total-builds">3</div>
+                <div class="metric-footer">Projects in pipeline</div>
+              </div>
+            </div>
+
+            <div class="analytics-panel glass" style="margin-top: 24px;">
+              <div class="panel-header">
+                <h2>Regional Traffic Load (7 Days)</h2>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Aggregated from top 10 competitors</span>
+              </div>
+              <div class="chart-container" style="height: 300px;">
+                <canvas id="weekly-trend-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
 
@@ -631,6 +726,69 @@
           <button type="submit" class="btn-primary">Post Promotion</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Subscription & Billing Modal -->
+  <div class="modal-overlay" id="modal-billing">
+    <div class="modal-content glass" style="max-width: 800px; width: 90%;">
+      <button class="modal-close-btn" id="close-billing-modal">✕</button>
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h2 class="modal-title" style="font-size: 1.8rem; margin-bottom: 8px;">Choose Your Radar Plan</h2>
+        <p class="modal-subtitle">Upgrade to unlock competitor insights, historical analytics, and automated alerts.</p>
+        <div class="current-plan-banner" style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: var(--border-radius-md); font-weight: 600;">
+          Current Tier: <span id="current-tier-display" style="color: var(--color-primary);">Basic</span>
+        </div>
+      </div>
+
+      <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <!-- Basic Plan -->
+        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); display: flex; flex-direction: column;">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--text-primary); margin-bottom: 8px;">Basic</h3>
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">Free</div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">Forever</p>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
+            <li>✓ Live Competitor Map</li>
+            <li>✓ Open/Close Statuses</li>
+            <li>✓ Current Wait Times</li>
+            <li style="opacity: 0.3;">✗ Historical Analytics</li>
+            <li style="opacity: 0.3;">✗ Construction Radar</li>
+            <li style="opacity: 0.3;">✗ Real-time Alerts</li>
+          </ul>
+          <button class="btn-secondary btn-plan-select" data-tier="basic" style="width: 100%;">Current Plan</button>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); border-color: var(--color-primary); box-shadow: 0 0 20px rgba(99,102,241,0.15); display: flex; flex-direction: column; position: relative;">
+          <div style="position: absolute; top: -10px; right: 20px; background: var(--color-primary); color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; font-weight: bold;">POPULAR</div>
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">Pro Operator</h3>
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">$49</div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">per location / month</p>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
+            <li>✓ Everything in Basic</li>
+            <li style="color: var(--text-primary);">✓ Construction Radar</li>
+            <li style="color: var(--text-primary);">✓ Real-time Status Alerts</li>
+            <li style="opacity: 0.3;">✗ Historical Analytics</li>
+            <li style="opacity: 0.3;">✗ API Access</li>
+          </ul>
+          <button class="btn-primary btn-plan-select" data-tier="pro" style="width: 100%;">Upgrade to Pro</button>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); display: flex; flex-direction: column;">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--color-cyan); margin-bottom: 8px;">Enterprise</h3>
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">$149</div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">per region / month</p>
+          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
+            <li>✓ Everything in Pro</li>
+            <li style="color: var(--text-primary);">✓ Historical Analytics & CSV</li>
+            <li style="color: var(--text-primary);">✓ Multi-location Management</li>
+            <li style="color: var(--text-primary);">✓ Pricing History Trends</li>
+            <li style="color: var(--text-primary);">✓ API Access</li>
+          </ul>
+          <button class="btn-cyan btn-plan-select" data-tier="enterprise" style="width: 100%; border: none;">Upgrade to Enterprise</button>
+        </div>
+      </div>
     </div>
   </div>
 

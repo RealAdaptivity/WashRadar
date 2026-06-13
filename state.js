@@ -850,6 +850,62 @@ const DEFAULT_WASHES = [
     hours: "7:00 AM - 8:00 PM",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
     closureReason: ""
+  },
+  {
+    id: "wash-61",
+    name: "Justin Speedy Wash",
+    lat: 33.08472,
+    lng: -97.29653,
+    status: "open",
+    traffic: "low",
+    waitTime: 2,
+    address: "100 W 1st St, Justin, TX 76247",
+    phone: "(940) 555-1234",
+    hours: "7:00 AM - 8:00 PM",
+    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
+    closureReason: ""
+  },
+  {
+    id: "wash-62",
+    name: "Argyle Auto Spa",
+    lat: 33.11821,
+    lng: -97.18241,
+    status: "open",
+    traffic: "moderate",
+    waitTime: 8,
+    address: "410 US-377, Argyle, TX 76226",
+    phone: "(940) 555-5678",
+    hours: "8:00 AM - 7:00 PM",
+    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
+    closureReason: ""
+  },
+  {
+    id: "wash-63",
+    name: "Keller Suds & Shine",
+    lat: 32.93051,
+    lng: -97.22642,
+    status: "open",
+    traffic: "high",
+    waitTime: 18,
+    address: "205 S Main St, Keller, TX 76248",
+    phone: "(817) 555-9012",
+    hours: "7:00 AM - 8:00 PM",
+    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
+    closureReason: ""
+  },
+  {
+    id: "wash-64",
+    name: "Northlake Express Wash",
+    lat: 33.05612,
+    lng: -97.26981,
+    status: "open",
+    traffic: "low",
+    waitTime: 5,
+    address: "13000 TX-114, Northlake, TX 76262",
+    phone: "(940) 555-3456",
+    hours: "8:00 AM - 8:00 PM",
+    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
+    closureReason: ""
   }
 ];
 
@@ -1735,12 +1791,66 @@ DEFAULT_WASHES.forEach(populateWashDetails);
 class StateManager {
   constructor() {
     this.listeners = [];
+    this.subscribers = [];
+    
+    // Notifications system
+    this.notifications = [
+      {
+        id: "notif-1",
+        title: "Welcome to WashRadar",
+        body: "Your dashboard is ready. Explore competitor locations and deals.",
+        time: new Date().toISOString(),
+        read: false
+      }
+    ];
+
     this.washes = [];
     this.construction = [];
     this.offers = [];
     this.currentWeather = localStorage.getItem("washradar_weather") || "sunny";
+    this.subscriptionTier = "basic"; // 'basic', 'pro', 'enterprise'
+    
     this.initDb();
   }
+
+  // --- Notification Methods ---
+  
+  addNotification(title, body) {
+    const notif = {
+      id: "notif-" + Date.now(),
+      title,
+      body,
+      time: new Date().toISOString(),
+      read: false
+    };
+    this.notifications.unshift(notif);
+    
+    // Keep max 20 notifications
+    if (this.notifications.length > 20) {
+      this.notifications.pop();
+    }
+    
+    this.notifySubscribers();
+  }
+  
+  markAllNotificationsRead() {
+    this.notifications.forEach(n => n.read = true);
+    this.notifySubscribers();
+  }
+  
+  markNotificationRead(id) {
+    const notif = this.notifications.find(n => n.id === id);
+    if (notif) {
+      notif.read = true;
+      this.notifySubscribers();
+    }
+  }
+  
+  getUnreadNotificationCount() {
+    return this.notifications.filter(n => !n.read).length;
+  }
+
+  // --- End Notification Methods ---
 
   async initDb() {
     try {
@@ -1935,6 +2045,10 @@ class StateManager {
     this.listeners.forEach(callback => callback(this.getState()));
   }
 
+  notifySubscribers() {
+    this.notify();
+  }
+
   setWeather(weather) {
     this.currentWeather = weather;
     localStorage.setItem("washradar_weather", weather);
@@ -1985,19 +2099,41 @@ class StateManager {
       washes: processedWashes,
       construction: this.construction,
       offers: this.offers,
-      currentWeather: this.currentWeather
+      notifications: this.notifications,
+      currentWeather: this.currentWeather,
+      subscriptionTier: this.subscriptionTier
     };
   }
 
   // Actions
-  async updateWashStatus(washId, status, traffic, waitTime, closureReason = "") {
-    const washIndex = this.washes.findIndex(w => w.id === washId);
-    if (washIndex !== -1) {
-      this.washes[washIndex].status = status;
-      this.washes[washIndex].traffic = traffic;
-      this.washes[washIndex].waitTime = Number(waitTime);
-      this.washes[washIndex].closureReason = closureReason;
-      this.notify();
+  updateSubscriptionTier(tier) {
+    this.subscriptionTier = tier;
+    
+    if (tier === 'pro') {
+      this.addNotification("Upgrade Successful", "You are now on the Pro Plan. Real-time alerts and Construction Radar are unlocked!");
+    } else if (tier === 'enterprise') {
+      this.addNotification("Upgrade Successful", "Welcome to Enterprise. Historical Analytics are now unlocked.");
+    }
+    
+    this.notifySubscribers();
+  }
+
+  async updateWashStatus(washId, status, traffic, waitTime, reason = "") {
+    const wash = this.washes.find(w => w.id === washId);
+    if (wash) {
+      const oldStatus = wash.status;
+      wash.status = status;
+      wash.traffic = traffic;
+      wash.waitTime = parseInt(waitTime);
+      wash.closureReason = status !== 'open' ? reason : "";
+      
+      // Emit notification if status changed
+      if (oldStatus !== status) {
+        let statusText = status === "open" ? "Opened" : status === "closed" ? "Closed" : "Maintenance";
+        this.addNotification("Competitor Status Changed", `${wash.name} is now ${statusText}.`);
+      }
+
+      this.notifySubscribers();
 
       try {
         await supabase
@@ -2006,7 +2142,7 @@ class StateManager {
             status: status,
             traffic: traffic,
             wait_time: Number(waitTime),
-            closure_reason: closureReason
+            closure_reason: reason
           })
           .eq('id', washId);
       } catch (err) {
@@ -2031,7 +2167,10 @@ class StateManager {
       details
     };
     this.construction.push(newProject);
-    this.notify();
+
+    this.addNotification("New Construction Reported", `${name} is entering the ${stage} stage.`);
+
+    this.notifySubscribers();
 
     try {
       await supabase.from('construction').insert(newProject);
@@ -2042,24 +2181,30 @@ class StateManager {
     return newProject;
   }
 
-  async addOffer(washId, title, description, type, code, expires) {
+  async addOffer(washId, washName, title, description, type, code, expiry, details) {
     const newOffer = {
-      id: `offer-${Date.now()}`,
+      id: "offer-" + Date.now(),
       washId,
+      washName,
       title,
       description,
       type,
       code,
-      expires
+      expiry,
+      details,
+      postedAt: new Date().toISOString()
     };
+
     this.offers.push(newOffer);
-    this.notify();
+    
+    this.addNotification("New Promotion Posted", `${washName} posted a new ${type}: ${title}.`);
+    
+    this.notifySubscribers();
 
     try {
       await supabase.from('offers').insert({
         id: newOffer.id,
         wash_id: washId,
-        title,
         description,
         type,
         code,

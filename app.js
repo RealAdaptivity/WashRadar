@@ -10,6 +10,7 @@ import { mapComponent } from "./components/map.js";
 import { constructionRadarComponent } from "./components/radar.js";
 import { offersComponent } from "./components/offers.js";
 import { weatherComponent } from "./components/weather.js";
+import { analyticsComponent } from "./components/analytics.js";
 
 class AppController {
   constructor() {
@@ -23,12 +24,15 @@ class AppController {
     this.constructionRadarComponent = constructionRadarComponent;
     this.offersComponent = offersComponent;
     this.weatherComponent = weatherComponent;
+    this.analyticsComponent = analyticsComponent;
   }
 
   init() {
     this.setupTabNavigation();
     this.setupOperatorMode();
     this.setupOperatorForm();
+    this.setupNotifications();
+    this.setupBilling();
     
     // Initialize components
     this.dashboardComponent.init();
@@ -36,6 +40,7 @@ class AppController {
     this.constructionRadarComponent.init();
     this.offersComponent.init();
     this.weatherComponent.init();
+    this.analyticsComponent.init();
 
     // Register globally for component cross-communication
     window.appInstance = this;
@@ -43,9 +48,159 @@ class AppController {
     // Subscribe to state to update general UI highlights
     state.subscribe(() => {
       this.updateOperatorBanner();
+      this.renderNotifications();
+      this.updateBillingUI();
     });
     
     this.updateOperatorBanner();
+    this.renderNotifications();
+    this.updateBillingUI();
+  }
+
+  setupBilling() {
+    const btnBilling = document.getElementById("btn-billing");
+    const modalBilling = document.getElementById("modal-billing");
+    const closeBtn = document.getElementById("close-billing-modal");
+    
+    if (btnBilling) {
+      btnBilling.addEventListener("click", () => {
+        modalBilling.classList.add("active");
+      });
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        modalBilling.classList.remove("active");
+      });
+    }
+
+    const planBtns = document.querySelectorAll(".btn-plan-select");
+    planBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const tier = e.target.dataset.tier;
+        state.updateSubscriptionTier(tier);
+        modalBilling.classList.remove("active");
+      });
+    });
+  }
+
+  updateBillingUI() {
+    const { subscriptionTier } = state.getState();
+    const display = document.getElementById("current-tier-display");
+    if (display) {
+      display.textContent = subscriptionTier.charAt(0).toUpperCase() + subscriptionTier.slice(1);
+    }
+    
+    // Update plan buttons visually
+    document.querySelectorAll(".btn-plan-select").forEach(btn => {
+      if (btn.dataset.tier === subscriptionTier) {
+        btn.textContent = "Current Plan";
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+      } else {
+        btn.textContent = "Upgrade to " + (btn.dataset.tier.charAt(0).toUpperCase() + btn.dataset.tier.slice(1));
+        btn.disabled = false;
+        btn.style.opacity = "1";
+      }
+    });
+
+    // Gate tabs visually
+    const constructionTab = document.querySelector('.menu-link[data-tab="construction"]');
+    const analyticsTab = document.querySelector('.menu-link[data-tab="analytics"]');
+    
+    if (constructionTab) {
+      if (subscriptionTier === 'basic') {
+        constructionTab.style.opacity = "0.4";
+        constructionTab.innerHTML += `<span style="font-size:0.6rem;background:var(--color-primary);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">PRO</span>`;
+      } else {
+        constructionTab.style.opacity = "1";
+        const badge = constructionTab.querySelector('span:last-child');
+        if (badge && badge.textContent === 'PRO') badge.remove();
+      }
+    }
+    
+    if (analyticsTab) {
+      if (subscriptionTier !== 'enterprise') {
+        analyticsTab.style.opacity = "0.4";
+        analyticsTab.innerHTML += `<span style="font-size:0.6rem;background:var(--color-cyan);color:#fff;padding:2px 4px;border-radius:4px;margin-left:auto;">ENT</span>`;
+      } else {
+        analyticsTab.style.opacity = "1";
+        const badge = analyticsTab.querySelector('span:last-child');
+        if (badge && badge.textContent === 'ENT') badge.remove();
+      }
+    }
+  }
+
+  setupNotifications() {
+    const btn = document.getElementById("notification-btn");
+    const dropdown = document.getElementById("notification-dropdown");
+    const markAllReadBtn = document.getElementById("mark-all-read");
+
+    if (btn && dropdown) {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isVisible = dropdown.style.display === "flex";
+        dropdown.style.display = isVisible ? "none" : "flex";
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("#notification-wrapper")) {
+          dropdown.style.display = "none";
+        }
+      });
+    }
+
+    if (markAllReadBtn) {
+      markAllReadBtn.addEventListener("click", () => {
+        state.markAllNotificationsRead();
+      });
+    }
+  }
+
+  renderNotifications() {
+    const { notifications } = state.getState();
+    const badge = document.getElementById("notification-badge");
+    const list = document.getElementById("notification-list");
+    
+    if (!badge || !list) return;
+
+    // Update badge
+    const unreadCount = state.getUnreadNotificationCount();
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount;
+      badge.style.display = "block";
+    } else {
+      badge.style.display = "none";
+    }
+
+    // Render list
+    if (notifications.length === 0) {
+      list.innerHTML = `
+        <div class="notification-empty" style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+          No new alerts.
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = notifications.map(n => {
+      const time = new Date(n.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      return `
+        <div class="notification-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+          <div class="notification-title">${n.title}</div>
+          <div class="notification-body">${n.body}</div>
+          <div class="notification-time">${time}</div>
+        </div>
+      `;
+    }).join("");
+
+    // Add click listeners to mark as read
+    list.querySelectorAll('.notification-item').forEach(item => {
+      item.addEventListener('click', () => {
+        state.markNotificationRead(item.dataset.id);
+      });
+    });
   }
 
   setupTabNavigation() {
@@ -60,6 +215,19 @@ class AppController {
         const targetTab = link.dataset.tab;
 
         if (!targetTab) return;
+
+        // Check billing tier locks
+        const { subscriptionTier } = state.getState();
+        if (targetTab === "construction" && subscriptionTier === "basic") {
+          document.getElementById("modal-billing").classList.add("active");
+          state.addNotification("Feature Locked", "Upgrade to Pro to access Construction Radar.");
+          return;
+        }
+        if (targetTab === "analytics" && subscriptionTier !== "enterprise") {
+          document.getElementById("modal-billing").classList.add("active");
+          state.addNotification("Feature Locked", "Upgrade to Enterprise to access Analytics.");
+          return;
+        }
 
         // Visual states of menu
         document.querySelectorAll(".sidebar-menu .menu-item").forEach(li => {

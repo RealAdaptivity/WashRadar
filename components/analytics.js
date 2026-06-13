@@ -1,0 +1,146 @@
+import { state } from "../state.js";
+
+class AnalyticsComponent {
+  constructor() {
+    this.chart = null;
+  }
+
+  init() {
+    this.renderChart();
+    this.setupExport();
+    
+    // Subscribe to state updates to refresh analytics numbers
+    state.subscribe(() => {
+      this.updateMetrics();
+    });
+    
+    this.updateMetrics();
+  }
+
+  updateMetrics() {
+    const { washes, construction, offers } = state.getState();
+    
+    // Mock capacity
+    const totalCapacity = washes.length * 40; // Approx 40 cars/hr per wash
+    
+    // Avg wait
+    const openWashes = washes.filter(w => w.status === 'open');
+    const avgWait = openWashes.length > 0 
+      ? Math.round(openWashes.reduce((acc, w) => acc + w.waitTime, 0) / openWashes.length) 
+      : 0;
+
+    const elCapacity = document.getElementById("analytics-total-capacity");
+    const elWait = document.getElementById("analytics-avg-wait");
+    const elPromos = document.getElementById("analytics-total-promos");
+    const elBuilds = document.getElementById("analytics-total-builds");
+
+    if (elCapacity) elCapacity.innerText = totalCapacity.toLocaleString();
+    if (elWait) elWait.innerText = `${avgWait}m`;
+    if (elPromos) elPromos.innerText = offers.length;
+    if (elBuilds) elBuilds.innerText = construction.length;
+  }
+
+  renderChart() {
+    const canvas = document.getElementById("weekly-trend-chart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    // Mock 7 day data for regional traffic
+    const labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const dataExpress = [1200, 1150, 1300, 1400, 1800, 2200, 2100];
+    const dataFull = [800, 750, 850, 900, 1100, 1500, 1400];
+
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Express Conveyor Traffic',
+            data: dataExpress,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Full Service Detail Traffic',
+            data: dataFull,
+            borderColor: '#06b6d4',
+            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#94a3b8'
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: '#94a3b8'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            },
+            ticks: {
+              color: '#94a3b8'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  setupExport() {
+    const btn = document.getElementById("btn-export-csv");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+      const { washes } = state.getState();
+      
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "ID,Name,Status,Traffic,Wait Time (m),Address\\n";
+      
+      washes.forEach(w => {
+        const row = [
+          w.id,
+          `"${w.name}"`,
+          w.status,
+          w.traffic,
+          w.waitTime,
+          `"${w.address}"`
+        ].join(",");
+        csvContent += row + "\\r\\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "washradar_export.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Notify
+      state.addNotification("Export Complete", "Your CSV data export has been downloaded.");
+    });
+  }
+}
+
+export const analyticsComponent = new AnalyticsComponent();
