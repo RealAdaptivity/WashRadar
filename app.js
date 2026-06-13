@@ -339,10 +339,55 @@ class AppController {
           return;
         }
 
-        state.updateSubscriptionTier(tier);
         modalBilling.classList.remove("active");
+
+        // Trigger Checkout Flow
+        const checkoutModal = document.getElementById("modal-checkout");
+        if (checkoutModal) {
+          document.getElementById("checkout-item-name").textContent = `${tier.charAt(0).toUpperCase() + tier.slice(1)} Subscription`;
+          document.getElementById("checkout-item-price").textContent = tier === 'pro' ? "$49.99/mo" : (tier === 'enterprise' ? "$149.99/mo" : "$34.99/mo");
+          
+          document.getElementById("checkout-step-1").style.display = "block";
+          document.getElementById("checkout-step-2").style.display = "none";
+          document.getElementById("checkout-step-3").style.display = "none";
+          
+          // Store tier to update state later
+          checkoutModal.dataset.pendingTier = tier;
+          
+          checkoutModal.classList.add("active");
+        } else {
+          state.updateSubscriptionTier(tier);
+        }
       });
     });
+
+    // Handle Checkout Process
+    const btnProcess = document.getElementById("btn-process-payment");
+    if (btnProcess) {
+      btnProcess.addEventListener("click", () => {
+        document.getElementById("checkout-step-1").style.display = "none";
+        document.getElementById("checkout-step-2").style.display = "block";
+        
+        setTimeout(() => {
+          document.getElementById("checkout-step-2").style.display = "none";
+          document.getElementById("checkout-step-3").style.display = "block";
+          
+          const pendingTier = document.getElementById("modal-checkout").dataset.pendingTier;
+          if (pendingTier) {
+            state.updateSubscriptionTier(pendingTier);
+            document.getElementById("modal-checkout").dataset.pendingTier = "";
+          }
+        }, 2000);
+      });
+    }
+
+    const btnFinish = document.getElementById("btn-finish-checkout");
+    if (btnFinish) {
+      btnFinish.addEventListener("click", () => {
+        document.getElementById("modal-checkout").classList.remove("active");
+        state.addNotification("Success", "Pass added to your Garage!");
+      });
+    }
   }
 
   updateBillingUI() {

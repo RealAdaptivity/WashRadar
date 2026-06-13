@@ -377,6 +377,22 @@ class MapComponent {
                 
                 this.map.fitBounds(this.currentRoute.getBounds(), { padding: [50, 50] });
                 
+                // Show Checkout Modal
+                setTimeout(() => {
+                  const checkoutModal = document.getElementById("modal-checkout");
+                  if (checkoutModal) {
+                    document.getElementById("checkout-item-name").textContent = `Single Wash (${w.name})`;
+                    document.getElementById("checkout-item-price").textContent = "$15.00";
+                    
+                    // Reset steps
+                    document.getElementById("checkout-step-1").style.display = "block";
+                    document.getElementById("checkout-step-2").style.display = "none";
+                    document.getElementById("checkout-step-3").style.display = "none";
+                    
+                    checkoutModal.classList.add("active");
+                  }
+                }, 800);
+                
               } else {
                 // Switch to dashboard and highlight this wash
                 const dashTab = document.querySelector('[data-tab="dashboard"]');

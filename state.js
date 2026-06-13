@@ -27,7 +27,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [5, 2, 0, 0, 0, 0, 10, 25, 45, 60, 50, 55, 65, 70, 75, 80, 85, 70, 50, 30, 15, 10, 5, 5],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 543
   },
   {
     id: "wash-2",
@@ -45,7 +47,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [2, 0, 0, 0, 0, 5, 20, 40, 60, 75, 80, 85, 90, 88, 85, 92, 95, 88, 70, 55, 40, 25, 10, 5],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 430
   },
   {
     id: "wash-3",
@@ -63,7 +67,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 22, 28, 30, 35, 42, 40, 38, 45, 50, 42, 30, 18, 10, 5, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 350
   },
   {
     id: "wash-4",
@@ -81,7 +87,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [1, 0, 0, 0, 0, 2, 12, 22, 35, 48, 52, 58, 60, 58, 55, 62, 68, 60, 48, 32, 20, 12, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 210
   },
   {
     id: "wash-5",
@@ -99,7 +107,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 890
   },
   {
     id: "wash-6",
@@ -117,7 +127,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 420
   },
   {
     id: "wash-7",
@@ -135,7 +147,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 5, 10, 15, 20, 25, 30, 28, 25, 30, 35, 32, 20, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.9,
+    reviewCount: 300
   },
   {
     id: "wash-8",
@@ -153,7 +167,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [3, 1, 0, 0, 0, 5, 15, 30, 42, 50, 55, 58, 60, 58, 55, 62, 65, 58, 45, 32, 22, 15, 8, 4],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 1436
   },
   {
     id: "wash-9",
@@ -189,7 +205,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 900
   },
   {
     id: "wash-11",
@@ -207,7 +225,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [5, 2, 0, 0, 0, 0, 10, 25, 45, 60, 50, 55, 65, 70, 75, 80, 85, 70, 50, 30, 15, 10, 5, 5],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 292
   },
   {
     id: "wash-12",
@@ -225,7 +245,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [2, 0, 0, 0, 0, 5, 20, 40, 60, 75, 80, 85, 90, 88, 85, 92, 95, 88, 70, 55, 40, 25, 10, 5],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 1481
   },
   {
     id: "wash-13",
@@ -243,7 +265,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.9,
+    reviewCount: 396
   },
   {
     id: "wash-14",
@@ -260,8 +284,10 @@ const DEFAULT_WASHES = [
     openedDate: "Unknown",
     chemicals: "Unknown",
     equipment: "Unknown",
-    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 18, 30, 45, 55, 60, 62, 58, 65, 70, 75, 65, 50, 35, 20, 10, 0, 0],
-    closureReason: ""
+    trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 135716
   },
   {
     id: "wash-15",
@@ -279,7 +305,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 5, 10, 15, 20, 25, 30, 28, 25, 30, 35, 32, 20, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 1538
   },
   {
     id: "wash-16",
@@ -297,7 +325,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 10, 25, 45, 65, 70, 75, 80, 85, 80, 75, 85, 90, 80, 65, 45, 30, 15, 5, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 1356
   },
   {
     id: "wash-17",
@@ -315,7 +345,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 1816
   },
   {
     id: "wash-18",
@@ -333,7 +365,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 10, 20, 35, 45, 50, 55, 58, 55, 50, 58, 62, 55, 40, 25, 12, 5, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 795
   },
   {
     id: "wash-19",
@@ -351,7 +385,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 24, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 467
   },
   {
     id: "wash-20",
@@ -369,7 +405,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 8, 18, 30, 45, 50, 55, 58, 55, 52, 58, 65, 58, 45, 30, 18, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 757
   },
   {
     id: "wash-21",
@@ -387,7 +425,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 6, 15, 25, 35, 40, 45, 48, 45, 42, 48, 52, 45, 35, 25, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 1253
   },
   {
     id: "wash-22",
@@ -405,7 +445,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 3, 8, 15, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 736
   },
   {
     id: "wash-23",
@@ -441,7 +483,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 6, 12, 18, 22, 25, 28, 25, 22, 25, 30, 25, 18, 10, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.1,
+    reviewCount: 1969
   },
   {
     id: "wash-25",
@@ -459,7 +503,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.1,
+    reviewCount: 269
   },
   {
     id: "wash-26",
@@ -477,7 +523,9 @@ const DEFAULT_WASHES = [
     chemicals: "Reverse osmosis spot-free rinse, tri-color polish",
     equipment: "Recycled water system (70%)",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 6, 12, 18, 20, 22, 25, 22, 20, 25, 30, 25, 18, 10, 4, 1, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 1811
   },
   {
     id: "wash-27",
@@ -495,7 +543,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 6, 15, 25, 35, 42, 45, 48, 45, 42, 48, 52, 45, 32, 22, 12, 5, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 1769
   },
   {
     id: "wash-28",
@@ -513,7 +563,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [1, 0, 0, 0, 0, 5, 12, 25, 42, 55, 62, 68, 70, 68, 65, 72, 78, 70, 55, 38, 25, 15, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 908
   },
   {
     id: "wash-29",
@@ -531,7 +583,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 985
   },
   {
     id: "wash-30",
@@ -549,7 +603,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 8, 18, 30, 45, 50, 55, 58, 55, 52, 58, 65, 58, 45, 30, 18, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.1,
+    reviewCount: 487
   },
   {
     id: "wash-31",
@@ -567,7 +623,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 24, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 1332
   },
   {
     id: "wash-32",
@@ -585,7 +643,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 3, 8, 15, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 418
   },
   {
     id: "wash-33",
@@ -621,7 +681,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 10, 20, 32, 45, 52, 58, 62, 58, 55, 62, 68, 60, 48, 32, 20, 12, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.2,
+    reviewCount: 1133
   },
   {
     id: "wash-35",
@@ -639,7 +701,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 558
   },
   {
     id: "wash-36",
@@ -657,7 +721,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 8, 15, 25, 35, 42, 45, 48, 45, 42, 48, 52, 45, 32, 22, 12, 5, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 1175
   },
   {
     id: "wash-37",
@@ -675,7 +741,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 964
   },
   {
     id: "wash-38",
@@ -693,7 +761,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 6, 12, 22, 35, 42, 48, 50, 48, 45, 50, 55, 48, 35, 25, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 433
   },
   {
     id: "wash-39",
@@ -711,7 +781,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 1147
   },
   {
     id: "wash-40",
@@ -729,7 +801,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 1936
   },
   {
     id: "wash-41",
@@ -747,7 +821,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [1, 0, 0, 0, 0, 5, 12, 25, 42, 55, 62, 68, 70, 68, 65, 72, 78, 70, 55, 38, 25, 15, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 1113
   },
   {
     id: "wash-42",
@@ -765,7 +841,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 3, 8, 15, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 449
   },
   {
     id: "wash-43",
@@ -783,7 +861,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 6, 15, 25, 35, 42, 45, 48, 45, 42, 48, 52, 45, 32, 22, 12, 5, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 1916
   },
   {
     id: "wash-44",
@@ -801,7 +881,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 8, 18, 30, 45, 50, 55, 58, 55, 52, 58, 65, 58, 45, 30, 18, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 1679
   },
   {
     id: "wash-45",
@@ -819,7 +901,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 6, 12, 18, 22, 25, 28, 25, 22, 25, 30, 25, 18, 10, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 907
   },
   {
     id: "wash-46",
@@ -837,7 +921,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 10, 20, 35, 45, 50, 55, 58, 55, 50, 58, 62, 55, 40, 25, 12, 5, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 1308
   },
   {
     id: "wash-47",
@@ -855,7 +941,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [2, 0, 0, 0, 0, 5, 20, 40, 60, 75, 80, 85, 90, 88, 85, 92, 95, 88, 70, 55, 40, 25, 10, 5],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 595
   },
   {
     id: "wash-48",
@@ -873,7 +961,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 1893
   },
   {
     id: "wash-49",
@@ -891,7 +981,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 8, 18, 30, 45, 50, 55, 58, 55, 52, 58, 65, 58, 45, 30, 18, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.9,
+    reviewCount: 1263
   },
   {
     id: "wash-50",
@@ -909,7 +1001,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 24, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 237
   },
   {
     id: "wash-51",
@@ -927,7 +1021,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 3, 8, 15, 22, 25, 28, 30, 28, 25, 28, 32, 28, 20, 12, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 1500
   },
   {
     id: "wash-52",
@@ -945,7 +1041,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 2, 6, 12, 18, 22, 25, 28, 25, 22, 25, 30, 25, 18, 10, 5, 2, 0, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 348
   },
   {
     id: "wash-53",
@@ -963,7 +1061,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 10, 20, 32, 45, 52, 58, 62, 58, 55, 62, 68, 60, 48, 32, 20, 12, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.9,
+    reviewCount: 952
   },
   {
     id: "wash-54",
@@ -981,7 +1081,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 2, 8, 18, 30, 42, 48, 52, 55, 52, 48, 52, 58, 52, 40, 28, 15, 8, 2, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.3,
+    reviewCount: 1003
   },
   {
     id: "wash-55",
@@ -999,7 +1101,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 179
   },
   {
     id: "wash-56",
@@ -1017,7 +1121,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 10, 25, 45, 65, 70, 75, 80, 85, 80, 75, 85, 90, 80, 65, 45, 30, 15, 5, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.7,
+    reviewCount: 1318
   },
   {
     id: "wash-57",
@@ -1035,7 +1141,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 6, 15, 25, 35, 42, 45, 48, 45, 42, 48, 52, 45, 32, 22, 12, 5, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 113
   },
   {
     id: "wash-58",
@@ -1053,7 +1161,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 4, 10, 18, 24, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.6,
+    reviewCount: 1975
   },
   {
     id: "wash-59",
@@ -1071,7 +1181,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 1, 10, 20, 32, 45, 52, 58, 62, 58, 55, 62, 68, 60, 48, 32, 20, 12, 5, 2],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.8,
+    reviewCount: 1648
   },
   {
     id: "wash-60",
@@ -1089,7 +1201,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4,
+    reviewCount: 202
   },
   {
     id: "wash-61",
@@ -1107,7 +1221,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.5,
+    reviewCount: 1874
   },
   {
     id: "wash-62",
@@ -1125,7 +1241,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 1581
   },
   {
     id: "wash-63",
@@ -1143,7 +1261,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 1491
   },
   {
     id: "wash-64",
@@ -1161,7 +1281,9 @@ const DEFAULT_WASHES = [
     chemicals: "Unknown",
     equipment: "Unknown",
     trafficHistory: [0, 0, 0, 0, 0, 0, 5, 12, 18, 25, 28, 30, 32, 30, 28, 32, 35, 30, 22, 15, 8, 4, 1, 0],
-    closureReason: ""
+    closureReason: "",
+    rating: 4.4,
+    reviewCount: 1087
   }
 ];
 
@@ -2640,4 +2762,5 @@ class StateManager {
 }
 
 export const state = new StateManager();
+
 

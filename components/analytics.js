@@ -105,6 +105,55 @@ class AnalyticsComponent {
         }
       }
     });
+
+    // 2. Revenue Chart (Bar)
+    const revCanvas = document.getElementById("revenue-chart");
+    if (revCanvas) {
+      new Chart(revCanvas.getContext("2d"), {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Est. MRR ($)',
+            data: [45000, 48000, 41000, 52000, 61000, 68000],
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+          }
+        }
+      });
+    }
+
+    // 3. Churn Chart (Doughnut)
+    const churnCanvas = document.getElementById("churn-chart");
+    if (churnCanvas) {
+      new Chart(churnCanvas.getContext("2d"), {
+        type: 'doughnut',
+        data: {
+          labels: ['Retained', 'At-Risk (Wait Times)', 'Churned'],
+          datasets: [{
+            data: [85, 10, 5],
+            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } }
+          },
+          cutout: '75%'
+        }
+      });
+    }
   }
 
   setupExport() {
@@ -139,6 +188,33 @@ class AnalyticsComponent {
       
       // Notify
       state.addNotification("Export Complete", "Your CSV data export has been downloaded.");
+    });
+    
+    // Setup Export to PDF (Print View)
+    const btnPdf = document.getElementById("btn-export-pdf");
+    if (btnPdf) {
+      btnPdf.addEventListener("click", () => {
+        window.print();
+        state.addNotification("Export Started", "Printing Weekly Intelligence Brief...");
+      });
+    }
+
+    // Setup AI Auto-Replies
+    const aiBtns = document.querySelectorAll(".btn-ai-reply");
+    aiBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const replyBox = e.target.parentElement.querySelector(".ai-reply-box");
+        if (replyBox) {
+          e.target.disabled = true;
+          e.target.innerHTML = "⏳ Generating AI Reply...";
+          
+          setTimeout(() => {
+            e.target.style.display = "none";
+            replyBox.style.display = "block";
+            replyBox.innerHTML = `<strong>Drafted Response:</strong> "Hi there! We are so sorry to hear about the vacuum suction issue. We have dispatched our maintenance team to check the lines immediately. Please DM us your plate number and we will add a free wash to your Garage!" <br><button class="btn-primary" style="margin-top: 8px; font-size: 0.7rem; padding: 4px 8px;">Post to Google Maps</button>`;
+          }, 1500);
+        }
+      });
     });
   }
 }

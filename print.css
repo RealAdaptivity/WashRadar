@@ -1,0 +1,37 @@
+
+/* --- PRINT / PDF EXPORT STYLES --- */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  
+  .sidebar, .top-header, .radar-header-actions button, .btn-ai-reply {
+    display: none !important;
+  }
+  
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  
+  .analytics-panel, .metric-card {
+    border: 1px solid #ddd !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    color: #000 !important;
+  }
+  
+  h1, h2, h3, h4, span, p, div {
+    color: #000 !important;
+  }
+  
+  .radar-header-actions {
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+}
