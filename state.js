@@ -2170,12 +2170,12 @@ function populateWashDetails(w) {
   // Phase 3: Pricing History (Mock last 6 months trend for top plan)
   const currentPrice = w.plans && w.plans.length > 0 ? w.plans[w.plans.length - 1].price : 29.99;
   const basePrice = Math.max(9.99, currentPrice - (Math.random() * 10));
-  
+
   w.pricingHistory = [
     { date: "Jan", price: basePrice },
     { date: "Feb", price: basePrice },
-    { date: "Mar", price: basePrice + (currentPrice - basePrice)*0.3 }, 
-    { date: "Apr", price: basePrice + (currentPrice - basePrice)*0.3 },
+    { date: "Mar", price: basePrice + (currentPrice - basePrice) * 0.3 },
+    { date: "Apr", price: basePrice + (currentPrice - basePrice) * 0.3 },
     { date: "May", price: currentPrice },
     { date: "Jun", price: currentPrice },
   ].map(entry => ({ date: entry.date, price: parseFloat(entry.price.toFixed(2)) }));
@@ -2203,9 +2203,9 @@ function enhanceHistoryAndOwnership(wash) {
     const acq = ["Independent Owner-Operator", "Local Franchise", "Regional Group Acquisition (2023)", "Family Owned"];
     const chems = ["Simoniz", "Turtle Wax Pro", "Zep", "Qual Chem", "Blendco", "Lustra"];
     const equips = ["Sonny's", "MacNeil", "Motor City", "Peco", "AVW", "Coleman Hanna"];
-    
+
     // Deterministic random based on wash.id
-    const idHash = wash.id.split('').reduce((a,b) => a + b.charCodeAt(0), 0);
+    const idHash = wash.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
     wash.established = years[idHash % years.length];
     wash.acquired = acq[(idHash + 1) % acq.length];
     wash.chemicalSupplier = chems[(idHash + 2) % chems.length];
@@ -2219,7 +2219,7 @@ class StateManager {
   constructor() {
     this.listeners = [];
     this.subscribers = [];
-    
+
     // Notifications system
     this.notifications = [
       {
@@ -2237,7 +2237,7 @@ class StateManager {
     this.currentWeather = localStorage.getItem("washradar_weather") || "sunny";
     this.subscriptionTier = "basic"; // 'basic', 'pro', 'enterprise'
     this.currentUser = null;
-    
+
     this.initDb();
     this.initAuth();
     this.requestNotificationPermission();
@@ -2252,7 +2252,7 @@ class StateManager {
   }
 
   // --- Notification Methods ---
-  
+
   addNotification(title, body) {
     const notif = {
       id: "notif-" + Date.now(),
@@ -2262,12 +2262,12 @@ class StateManager {
       read: false
     };
     this.notifications.unshift(notif);
-    
+
     // Keep max 20 notifications
     if (this.notifications.length > 20) {
       this.notifications.pop();
     }
-    
+
     // Trigger OS Push Notification
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification(title, {
@@ -2275,15 +2275,15 @@ class StateManager {
         icon: "washradar_logo.png"
       });
     }
-    
+
     this.notifySubscribers();
   }
-  
+
   markAllNotificationsRead() {
     this.notifications.forEach(n => n.read = true);
     this.notifySubscribers();
   }
-  
+
   markNotificationRead(id) {
     const notif = this.notifications.find(n => n.id === id);
     if (notif) {
@@ -2291,7 +2291,7 @@ class StateManager {
       this.notifySubscribers();
     }
   }
-  
+
   getUnreadNotificationCount() {
     return this.notifications.filter(n => !n.read).length;
   }
@@ -2628,7 +2628,7 @@ class StateManager {
   // Actions
   async updateSubscriptionTier(tier) {
     this.subscriptionTier = tier;
-    
+
     // Persist to Supabase Auth if logged in
     if (this.currentUser) {
       const { error } = await supabase.auth.updateUser({
@@ -2638,13 +2638,13 @@ class StateManager {
         console.error("Failed to update user plan:", error);
       }
     }
-    
+
     if (tier === 'pro') {
       this.addNotification("Upgrade Successful", "You are now on the Pro Plan. Real-time alerts and Construction Radar are unlocked!");
     } else if (tier === 'enterprise') {
       this.addNotification("Upgrade Successful", "Welcome to Enterprise. Historical Analytics are now unlocked.");
     }
-    
+
     this.notifySubscribers();
   }
 
@@ -2656,7 +2656,7 @@ class StateManager {
       wash.traffic = traffic;
       wash.waitTime = parseInt(waitTime);
       wash.closureReason = status !== 'open' ? reason : "";
-      
+
       // Emit notification if status changed
       if (oldStatus !== status) {
         let statusText = status === "open" ? "Opened" : status === "closed" ? "Closed" : "Maintenance";
@@ -2726,9 +2726,9 @@ class StateManager {
     };
 
     this.offers.push(newOffer);
-    
+
     this.addNotification("New Promotion Posted", `${washName} posted a new ${type}: ${title}.`);
-    
+
     this.notifySubscribers();
 
     try {
