@@ -336,20 +336,63 @@ class MapComponent {
           const btn = document.querySelector(`.popup-action[data-id="${w.id}"]`);
           if (btn) {
             btn.addEventListener("click", () => {
-              // Switch to dashboard and highlight this wash
-              const dashTab = document.querySelector('[data-tab="dashboard"]');
-              if (dashTab) {
-                dashTab.click();
-                // Find and highlight/scroll in dashboard
-                setTimeout(() => {
-                  const items = document.querySelectorAll(".wash-compact-item");
-                  items.forEach(it => {
-                    if (it.dataset.id === w.id) {
-                      it.click(); // Triggers the dashboard logic to update details
-                      it.scrollIntoView({ behavior: "smooth", block: "center" });
-                    }
+              if (this.isDriverMode) {
+                // Draw polyline route on map
+                if (this.currentRoute) {
+                  this.map.removeLayer(this.currentRoute);
+                }
+                
+                // Simulate current location slightly off from the wash
+                const simLat = w.lat - 0.05;
+                const simLng = w.lng + 0.05;
+                
+                // Add simulated driver location marker if not exists
+                if (!this.driverMarker) {
+                  const driverIcon = L.divIcon({
+                    className: "custom-div-icon",
+                    html: `<div style="font-size: 24px;">📍</div>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
                   });
-                }, 100);
+                  this.driverMarker = L.marker([simLat, simLng], { icon: driverIcon }).addTo(this.map);
+                  this.driverMarker.bindPopup("Your Location").openPopup();
+                } else {
+                  this.driverMarker.setLatLng([simLat, simLng]);
+                }
+                
+                // Create animated polyline
+                const latlngs = [
+                  [simLat, simLng],
+                  [simLat + 0.02, simLng - 0.02],
+                  [w.lat, w.lng]
+                ];
+                
+                this.currentRoute = L.polyline(latlngs, {
+                  color: 'var(--color-cyan)',
+                  weight: 5,
+                  opacity: 0.8,
+                  dashArray: '10, 10',
+                  lineJoin: 'round'
+                }).addTo(this.map);
+                
+                this.map.fitBounds(this.currentRoute.getBounds(), { padding: [50, 50] });
+                
+              } else {
+                // Switch to dashboard and highlight this wash
+                const dashTab = document.querySelector('[data-tab="dashboard"]');
+                if (dashTab) {
+                  dashTab.click();
+                  // Find and highlight/scroll in dashboard
+                  setTimeout(() => {
+                    const items = document.querySelectorAll(".wash-compact-item");
+                    items.forEach(it => {
+                      if (it.dataset.id === w.id) {
+                        it.click(); // Triggers the dashboard logic to update details
+                        it.scrollIntoView({ behavior: "smooth", block: "center" });
+                      }
+                    });
+                  }, 100);
+                }
               }
             });
           }

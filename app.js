@@ -34,6 +34,9 @@ class AppController {
     this.setupNotifications();
     this.setupBilling();
     this.setupAuth();
+    this.setupGeofencing();
+    this.setupTour();
+    this.setupTheme();
     
     // Initialize components
     this.dashboardComponent.init();
@@ -58,6 +61,88 @@ class AppController {
     this.renderNotifications();
     this.updateBillingUI();
     this.updateAuthUI();
+  }
+
+  setupGeofencing() {
+    const btnSimulateDrive = document.getElementById("btn-simulate-drive");
+    const modalGeofence = document.getElementById("modal-geofence");
+    
+    if (btnSimulateDrive && modalGeofence) {
+      btnSimulateDrive.addEventListener("click", () => {
+        // Show in-app modal
+        modalGeofence.classList.add("active");
+        
+        // Trigger OS Push Notification via state manager
+        state.addNotification("Geofence Alert!", "You are 0.3 miles from Longhorn Car Wash. Open app for 20% off!", true);
+      });
+    }
+  }
+
+  setupTour() {
+    const btnTour = document.getElementById("btn-tour");
+    const modalTour = document.getElementById("modal-tour");
+    const btnSkip = document.getElementById("btn-tour-skip");
+    const btnNext = document.getElementById("btn-tour-next");
+    const tourTitle = document.getElementById("tour-title");
+    const tourIcon = document.getElementById("tour-icon");
+    const tourText = document.getElementById("tour-text");
+    const tourCounter = document.getElementById("tour-step-counter");
+    
+    let currentStep = 1;
+    const steps = [
+      { title: "Welcome to WashRadar!", icon: "🗺️", text: "This platform gives you real-time competitor intelligence. Let's take a quick look at the core features!" },
+      { title: "Dashboard & Analytics", icon: "📊", text: "Get an overview of active washes, closures, and weather impacts. Switch between Driver and Operator modes using the sidebar buttons." },
+      { title: "Live Map & Routing", icon: "🚙", text: "View live traffic at competitor locations. Drivers can buy tickets and see dynamic routes, while operators can manage statuses." },
+      { title: "Construction Radar", icon: "🏗️", text: "Track new carwashes being built in your territory to prepare for future market shifts. Report new sites instantly." }
+    ];
+
+    const updateTourUI = () => {
+      const step = steps[currentStep - 1];
+      tourTitle.textContent = step.title;
+      tourIcon.textContent = step.icon;
+      tourText.textContent = step.text;
+      tourCounter.textContent = `Step ${currentStep} of ${steps.length}`;
+      btnNext.textContent = currentStep === steps.length ? "Finish" : "Next ➔";
+    };
+
+    if (btnTour && modalTour) {
+      btnTour.addEventListener("click", () => {
+        currentStep = 1;
+        updateTourUI();
+        modalTour.classList.add("active");
+      });
+      
+      btnSkip.addEventListener("click", () => {
+        modalTour.classList.remove("active");
+      });
+
+      btnNext.addEventListener("click", () => {
+        if (currentStep < steps.length) {
+          currentStep++;
+          updateTourUI();
+        } else {
+          modalTour.classList.remove("active");
+        }
+      });
+    }
+  }
+
+  setupTheme() {
+    const btnThemeToggle = document.getElementById("btn-theme-toggle");
+    let isLightMode = false;
+    
+    if (btnThemeToggle) {
+      btnThemeToggle.addEventListener("click", () => {
+        isLightMode = !isLightMode;
+        if (isLightMode) {
+          document.body.classList.add("light-theme");
+          btnThemeToggle.textContent = "🌙";
+        } else {
+          document.body.classList.remove("light-theme");
+          btnThemeToggle.textContent = "☀️";
+        }
+      });
+    }
   }
 
   setupAuth() {
@@ -203,15 +288,24 @@ class AppController {
     const btnOpenAuth = document.getElementById("btn-open-auth");
     const userProfile = document.getElementById("user-profile");
     const userEmail = document.getElementById("user-email");
+    const tabGarage = document.getElementById("tab-garage");
 
     if (currentUser) {
       if (btnOpenAuth) btnOpenAuth.style.display = "none";
       if (userProfile) userProfile.style.display = "flex";
       if (userEmail) userEmail.textContent = currentUser.email;
+      
+      // Show Garage tab for customers
+      if (tabGarage && currentUser.user_metadata && currentUser.user_metadata.account_type === 'customer') {
+        tabGarage.style.display = "flex";
+      } else if (tabGarage) {
+        tabGarage.style.display = "none";
+      }
     } else {
       if (btnOpenAuth) btnOpenAuth.style.display = "block";
       if (userProfile) userProfile.style.display = "none";
       if (userEmail) userEmail.textContent = "";
+      if (tabGarage) tabGarage.style.display = "none";
     }
   }
 
