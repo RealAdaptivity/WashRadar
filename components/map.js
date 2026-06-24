@@ -22,7 +22,6 @@ class MapComponent {
     this.showSelfServe = true;
     this.showHeatmap = false;
     this.heatLayer = null;
-    this.isDriverMode = true; // default to customer view until operator logs in
   }
 
   init() {
@@ -321,7 +320,6 @@ class MapComponent {
           }
 
           <div style="display: flex; gap: 8px; margin-top: 8px;">
-            ${this.isDriverMode ? `<button class="popup-action btn-buy-ticket" data-id="${w.id}" style="flex: 1; padding: 6px; font-size: 0.8rem; background: var(--color-primary); color: #fff;">🚙 Buy Ticket</button>` : ""}
             <button class="popup-action btn-view-details" data-id="${w.id}" style="flex: 1; padding: 6px; font-size: 0.8rem;">⚙️ View Details</button>
           </div>
         </div>
@@ -332,84 +330,18 @@ class MapComponent {
 
       marker.on("popupopen", () => {
         this.selectWash(w.id, false);
-        // Add click listener on details button inside popup
         setTimeout(() => {
-          // Buy Ticket Button Logic
-          const btnBuy = document.querySelector(`.btn-buy-ticket[data-id="${w.id}"]`);
-          if (btnBuy) {
-            btnBuy.addEventListener("click", () => {
-              // Draw polyline route on map
-              if (this.currentRoute) {
-                this.map.removeLayer(this.currentRoute);
-              }
-              
-              // Simulate current location slightly off from the wash
-              const simLat = w.lat - 0.05;
-              const simLng = w.lng + 0.05;
-              
-              // Add simulated driver location marker if not exists
-              if (!this.driverMarker) {
-                const driverIcon = L.divIcon({
-                  className: "custom-div-icon",
-                  html: `<div style="font-size: 24px;">📍</div>`,
-                  iconSize: [24, 24],
-                  iconAnchor: [12, 12]
-                });
-                this.driverMarker = L.marker([simLat, simLng], { icon: driverIcon }).addTo(this.map);
-                this.driverMarker.bindPopup("Your Location").openPopup();
-              } else {
-                this.driverMarker.setLatLng([simLat, simLng]);
-              }
-              
-              // Create animated polyline
-              const latlngs = [
-                [simLat, simLng],
-                [simLat + 0.02, simLng - 0.02],
-                [w.lat, w.lng]
-              ];
-              
-              this.currentRoute = L.polyline(latlngs, {
-                color: 'var(--color-cyan)',
-                weight: 5,
-                opacity: 0.8,
-                dashArray: '10, 10',
-                lineJoin: 'round'
-              }).addTo(this.map);
-              
-              this.map.fitBounds(this.currentRoute.getBounds(), { padding: [50, 50] });
-              
-              // Show Checkout Modal
-              setTimeout(() => {
-                const checkoutModal = document.getElementById("modal-checkout");
-                if (checkoutModal) {
-                  document.getElementById("checkout-item-name").textContent = `Single Wash (${w.name})`;
-                  document.getElementById("checkout-item-price").textContent = "$15.00";
-                  
-                  // Reset steps
-                  document.getElementById("checkout-step-1").style.display = "block";
-                  document.getElementById("checkout-step-2").style.display = "none";
-                  document.getElementById("checkout-step-3").style.display = "none";
-                  
-                  checkoutModal.classList.add("active");
-                }
-              }, 800);
-            });
-          }
-
-          // View Details Button Logic
           const btnDetails = document.querySelector(`.btn-view-details[data-id="${w.id}"]`);
           if (btnDetails) {
             btnDetails.addEventListener("click", () => {
-              // Switch to dashboard and highlight this wash
               const dashTab = document.querySelector('[data-tab="dashboard"]');
               if (dashTab) {
                 dashTab.click();
-                // Find and highlight/scroll in dashboard
                 setTimeout(() => {
                   const items = document.querySelectorAll(".wash-compact-item");
                   items.forEach(it => {
                     if (it.dataset.id === w.id) {
-                      it.click(); // Triggers the dashboard logic to update details
+                      it.click();
                       it.scrollIntoView({ behavior: "smooth", block: "center" });
                     }
                   });

@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>WashRadar – Competitor Intelligence & Promotions Hub</title>
+  <title>WashRadar – Operator Intelligence Platform</title>
   <meta name="description"
-    content="Live map of car‑wash locations with real‑time offers, hours, and competitor intelligence. Explore details, promotions, and weekly schedules.">
+    content="Real-time competitor intelligence for car wash operators. Monitor competitor statuses, track construction pipelines, manage promotions, and access analytics.">
   <link rel="canonical" href="https://your-domain.com/">
   <!-- Open Graph -->
   <meta property="og:title" content="WashRadar – Competitor Intelligence & Promotions Hub" />
@@ -80,13 +80,6 @@
             </svg>
             <span>Dashboard</span>
           </a>
-        <li class="menu-item">
-          <a class="menu-link" data-tab="garage" id="tab-garage" style="display: none;">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-            </svg>
-            <span>My Garage</span>
-          </a>
         </li>
         <li class="menu-item">
           <a class="menu-link" data-tab="map">
@@ -150,9 +143,6 @@
       <div class="sidebar-footer">
         <button class="operator-toggle-btn" id="btn-tour" style="margin-bottom: 8px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2);">
           💡 Quick Tour
-        </button>
-        <button class="operator-toggle-btn" id="operator-toggle" style="margin-bottom: 8px;">
-          ⚙️ Operator Portal
         </button>
         <button class="operator-toggle-btn" id="btn-billing" style="background: rgba(16, 185, 129, 0.1); color: var(--color-green); border-color: rgba(16, 185, 129, 0.2);">
           💳 Billing & Plans
@@ -223,96 +213,6 @@
 
         <!-- Operator Info Banner (Dynamically injected) -->
         <div id="operator-banner-container" style="display: none;"></div>
-
-        <!-- 0. MY GARAGE VIEW (Driver Mode Only) -->
-        <section id="garage-section" class="view-section">
-          <div class="analytics-view-container">
-            <div class="radar-header-actions" style="margin-bottom: 24px;">
-              <div style="display:flex; flex-direction:column; gap:4px;">
-                <h2 style="font-family: var(--font-display);">My Garage & Loyalty</h2>
-                <p style="font-size: 0.85rem; color: var(--text-secondary);">Manage your vehicles and active wash passes</p>
-              </div>
-            </div>
-
-            <div class="dashboard-grid">
-              <div class="metric-card glass">
-                <div class="metric-header">
-                  <span>Loyalty Points</span>
-                </div>
-                <div class="metric-value" style="color: var(--color-cyan);">850</div>
-                <div class="metric-footer">150 points until Free Wash</div>
-                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 12px; overflow: hidden;">
-                  <div style="width: 85%; height: 100%; background: var(--color-cyan);"></div>
-                </div>
-              </div>
-              <div class="metric-card glass">
-                <div class="metric-header">
-                  <span>Active Passes</span>
-                </div>
-                <div class="metric-value" style="color: var(--color-primary);">1</div>
-                <div class="metric-footer">Premium Shield (Tommy Terrific's)</div>
-              </div>
-              <div class="metric-card glass">
-                <div class="metric-header">
-                  <span>Washes This Month</span>
-                </div>
-                <div class="metric-value">4</div>
-                <div class="metric-footer">You saved $25 with your pass!</div>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 24px; margin-top: 32px;">
-              <!-- Vehicles -->
-              <div class="analytics-panel glass" style="flex: 1;">
-                <div class="panel-header" style="margin-bottom: 16px;">
-                  <h2>My Vehicles</h2>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                  <div style="padding: 16px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="display: flex; gap: 16px; align-items: center;">
-                      <div style="font-size: 2rem;">🚗</div>
-                      <div>
-                        <div style="font-weight: 600; font-size: 1.1rem;">2024 Tesla Model Y</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted);">License: TX-ABC1234</div>
-                      </div>
-                    </div>
-                    <span style="font-size: 0.75rem; padding: 4px 8px; background: var(--color-primary-glow); color: var(--color-primary); border-radius: 4px;">Active Sub</span>
-                  </div>
-                  <button class="btn-secondary" style="width: 100%; border: 1px dashed var(--text-muted); background: transparent;">+ Add Vehicle</button>
-                </div>
-              </div>
-
-              <!-- History -->
-              <div class="analytics-panel glass" style="flex: 1;">
-                <div class="panel-header" style="margin-bottom: 16px;">
-                  <h2>Recent Washes</h2>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                  <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border-color);">
-                    <div>
-                      <div style="font-weight: 500; font-size: 0.9rem;">Tommy Terrific's Car Wash</div>
-                      <div style="font-size: 0.8rem; color: var(--text-muted);">Premium Wash</div>
-                    </div>
-                    <div style="text-align: right;">
-                      <div style="font-weight: 600;">Subscribed</div>
-                      <div style="font-size: 0.75rem; color: var(--text-muted);">Yesterday</div>
-                    </div>
-                  </div>
-                  <div style="display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border-color);">
-                    <div>
-                      <div style="font-weight: 500; font-size: 0.9rem;">Carnation Auto Spa</div>
-                      <div style="font-size: 0.8rem; color: var(--text-muted);">Express Wash</div>
-                    </div>
-                    <div style="text-align: right;">
-                      <div style="font-weight: 600;">$12.00</div>
-                      <div style="font-size: 0.75rem; color: var(--text-muted);">Last Week</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         <!-- 1. DASHBOARD VIEW -->
         <section id="dashboard-section" class="view-section active">
@@ -669,14 +569,6 @@
                   <input type="checkbox" id="filter-type-self" checked>
                   <span>Self-Serve Bays</span>
                 </label>
-              </div>
-
-              <!-- Geofencing Simulator -->
-              <div class="map-filter-group glass" style="margin-top: 16px;" id="geofence-sim-container">
-                <h3>Geofence Radar</h3>
-                <button class="btn-cyan" id="btn-simulate-drive" style="width: 100%; margin-top: 8px; font-size: 0.85rem; padding: 10px;">
-                  🚗 Simulate Drive Near Wash
-                </button>
               </div>
 
               <!-- Filtered List of Map pins -->
@@ -1286,53 +1178,6 @@
         </div>
       </div>
 
-      <div id="customer-packages" class="pricing-grid" style="display: none; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-        <!-- Single Wash -->
-        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); display: flex; flex-direction: column;">
-          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--text-primary); margin-bottom: 8px;">Single Wash</h3>
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">$15</div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">One-time QR Ticket</p>
-          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
-            <li>✓ Valid at any partner wash</li>
-            <li>✓ Standard exterior wash</li>
-            <li>✓ Free vacuum access</li>
-            <li style="opacity: 0.3;">✗ Ceramic coating</li>
-            <li style="opacity: 0.3;">✗ Tire shine</li>
-          </ul>
-          <button class="btn-secondary btn-plan-select" data-tier="single" style="width: 100%;">Buy Ticket</button>
-        </div>
-
-        <!-- Monthly Basic -->
-        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); display: flex; flex-direction: column;">
-          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--color-cyan); margin-bottom: 8px;">Basic Unlimited</h3>
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">$25</div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">per month</p>
-          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
-            <li>✓ 1 Wash Per Day</li>
-            <li>✓ Valid at any partner wash</li>
-            <li>✓ Free vacuum access</li>
-            <li style="opacity: 0.3;">✗ Ceramic coating</li>
-            <li style="opacity: 0.3;">✗ Tire shine</li>
-          </ul>
-          <button class="btn-cyan btn-plan-select" data-tier="monthly_basic" style="width: 100%; border: none;">Subscribe</button>
-        </div>
-
-        <!-- Monthly Premium -->
-        <div class="pricing-card glass" style="padding: 24px; border-radius: var(--border-radius-md); border-color: var(--color-primary); box-shadow: 0 0 20px rgba(99,102,241,0.15); display: flex; flex-direction: column; position: relative;">
-          <div style="position: absolute; top: -10px; right: 20px; background: var(--color-primary); color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 10px; font-weight: bold;">BEST VALUE</div>
-          <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--color-primary); margin-bottom: 8px;">Premium Shield</h3>
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 4px;">$45</div>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">per month</p>
-          <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 24px;">
-            <li>✓ 1 Wash Per Day</li>
-            <li>✓ Valid at any partner wash</li>
-            <li>✓ Free vacuum access</li>
-            <li style="color: var(--text-primary);">✓ Ceramic coating</li>
-            <li style="color: var(--text-primary);">✓ Tire shine & underbody</li>
-          </ul>
-          <button class="btn-primary btn-plan-select" data-tier="monthly_premium" style="width: 100%;">Subscribe</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1341,8 +1186,8 @@
     <div class="modal-content glass" style="max-width: 400px; width: 90%;">
       <button class="modal-close-btn" id="close-auth-modal">✕</button>
       <div style="text-align: center; margin-bottom: 24px;">
-        <h2 class="modal-title" style="font-size: 1.5rem; margin-bottom: 8px;">Account Access</h2>
-        <p class="modal-subtitle">Sign in or create an account to save your plans.</p>
+        <h2 class="modal-title" style="font-size: 1.5rem; margin-bottom: 8px;">Operator Access</h2>
+        <p class="modal-subtitle">Sign in or register your wash to continue.</p>
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
@@ -1361,18 +1206,6 @@
         </div>
         
         <div id="signup-fields" style="display: none; flex-direction: column; gap: 16px;">
-          <div class="form-group" style="border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; background: rgba(0,0,0,0.1);">
-            <label style="margin-bottom: 8px; display: block;">Account Type</label>
-            <div style="display: flex; gap: 16px;">
-              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
-                <input type="radio" name="auth-account-type" value="customer" checked> Driver / Customer
-              </label>
-              <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
-                <input type="radio" name="auth-account-type" value="operator"> Wash Employee
-              </label>
-            </div>
-          </div>
-          
           <div style="display: flex; gap: 12px;">
             <div class="form-group" style="flex: 1;">
               <label for="auth-firstname">First Name</label>
@@ -1383,7 +1216,7 @@
               <input type="text" id="auth-lastname" placeholder="Doe" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
             </div>
           </div>
-          <div id="auth-operator-fields" style="display: none; flex-direction: column; gap: 16px;">
+          <div id="auth-operator-fields" style="display: flex; flex-direction: column; gap: 16px;">
             <div class="form-group">
               <label for="auth-wash-name">Wash Name</label>
               <input type="text" id="auth-wash-name" placeholder="e.g. Tommy Terrific's" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: #fff; border-radius: 6px;" />
@@ -1424,24 +1257,6 @@
     </div>
   </div>
 
-  <!-- Geofence Radar Modal -->
-  <div class="modal-overlay" id="modal-geofence">
-    <div class="modal-content glass" style="text-align: center;">
-      <button class="modal-close-btn" id="close-geofence-modal">✕</button>
-      <div style="font-size: 3rem; margin-bottom: 16px; animation: pulse 2s infinite;">📍</div>
-      <h2 class="modal-title" style="color: var(--color-cyan);">You're Nearby!</h2>
-      <p class="modal-subtitle" style="font-size: 1rem; color: var(--text-primary);">You are 0.3 miles from <strong>Longhorn Car Wash</strong>.</p>
-      
-      <div style="background: rgba(6, 182, 212, 0.1); border: 1px dashed var(--color-cyan); padding: 24px; border-radius: var(--border-radius-md); margin-bottom: 24px;">
-        <div style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--color-cyan); margin-bottom: 8px;">20% OFF EXPRESS WASH</div>
-        <div style="font-size: 0.85rem; color: var(--text-secondary);">Stop in now to claim your proximity discount. Valid for the next 30 minutes!</div>
-        <div style="margin-top: 16px; font-family: monospace; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; padding: 8px; background: rgba(0,0,0,0.5); border-radius: 4px;">RADAR20</div>
-      </div>
-      
-      <button class="btn-cyan" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="document.getElementById('modal-geofence').classList.remove('active');">Got it!</button>
-    </div>
-  </div>
-
   <!-- Stripe Checkout Modal -->
   <div class="modal-overlay" id="modal-checkout">
     <div class="modal-content glass" style="max-width: 400px; text-align: center; padding: 40px 24px;">
@@ -1478,7 +1293,7 @@
           <div style="width: 150px; height: 150px; background: repeating-linear-gradient(45deg, #000, #000 10px, #fff 10px, #fff 20px); border: 8px solid white;"></div>
         </div>
         
-        <button class="btn-cyan" id="btn-finish-checkout" style="width: 100%; padding: 12px;">Add to My Garage</button>
+        <button class="btn-cyan" id="btn-finish-checkout" style="width: 100%; padding: 12px;">Activate Plan</button>
       </div>
     </div>
   </div>

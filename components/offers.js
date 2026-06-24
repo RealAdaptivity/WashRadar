@@ -9,7 +9,7 @@ import { state } from "../state.js";
 class OffersComponent {
   constructor() {
     this.activeFilter = "all"; // "all" | "discount" | "subscription" | "combo" | "freebie"
-    this.isOperatorMode = false;
+    this.isOperatorMode = true;
   }
 
   init() {
@@ -19,11 +19,6 @@ class OffersComponent {
     state.subscribe(() => {
       this.render();
     });
-  }
-
-  setOperatorMode(active) {
-    this.isOperatorMode = active;
-    this.render();
   }
 
   setupEventListeners() {
