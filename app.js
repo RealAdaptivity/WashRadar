@@ -15,7 +15,6 @@ import { analyticsComponent } from "./components/analytics.js";
 class AppController {
   constructor() {
     this.currentTab = "dashboard";
-    this.isOperatorMode = true;
     this.operatorWashId = "wash-1"; // Default carwash the operator manages
     
     // Components
@@ -551,11 +550,6 @@ class AppController {
     const banner = document.getElementById("operator-banner-container");
     if (!banner) return;
 
-    if (!this.isOperatorMode) {
-      banner.style.display = "none";
-      return;
-    }
-
     const { washes } = state.getState();
     const currentWash = washes.find(w => w.id === this.operatorWashId) || washes[0];
     if (!currentWash) return;
@@ -572,7 +566,7 @@ class AppController {
     banner.innerHTML = `
       <div class="operator-active-banner">
         <div class="operator-banner-info">
-          ⚙️ <strong>Operator Mode Active</strong>: Managing <strong>${currentWash.name}</strong> — Status: ${statusText}
+          🏪 Managing <strong>${currentWash.name}</strong> — Status: ${statusText}
         </div>
         <div class="operator-banner-actions">
           <button class="btn-primary operator-banner-btn" id="btn-banner-status">Update Status</button>
